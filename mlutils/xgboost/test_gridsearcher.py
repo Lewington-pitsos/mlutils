@@ -36,3 +36,20 @@ class TestGridSearcher(unittest.TestCase):
         }, first_candidates)
 
         self.assertRaises(StopIteration, srch.__next__)
+
+    def test_works_with_small_params(self):
+        params = {
+            "a": [2],
+            "b": [11]
+        }
+        
+        srch = GridSearcher(params)
+
+        first_candidates = next(srch)
+
+        self.assertDictEqual({
+            "a": 2,
+            "b": 11
+        }, first_candidates)
+        self.assertRaises(StopIteration, srch.__next__)
+
