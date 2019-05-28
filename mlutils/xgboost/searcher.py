@@ -10,3 +10,7 @@ class Searcher(metaclass=ABCMeta):
     @abstractmethod
     def __next__(self) -> IntDict:
         pass
+
+    @abstractmethod
+    def finished(self) -> bool:
+        pass

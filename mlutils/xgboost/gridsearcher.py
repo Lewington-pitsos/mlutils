@@ -7,6 +7,7 @@ class GridSearcher(Searcher):
         self.params = params        
         self.paramIndices = {}
         self.started = False
+        self.finished = False
 
         for param in params:
             self.paramIndices[param] = 0
@@ -23,8 +24,7 @@ class GridSearcher(Searcher):
         elif self.param_step():
             return self.current_params()
         else:
-            raise StopIteration
-        
+            raise StopIteration                    
 
     def param_step(self) -> bool:
         updated = False
