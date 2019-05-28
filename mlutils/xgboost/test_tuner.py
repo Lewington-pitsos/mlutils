@@ -1,5 +1,6 @@
 import unittest
+from .tuner import lol
 
 class TestTest(unittest.TestCase):
     def test(self):
-        self.assertEqual(4, 4)
+        self.assertEqual(lol(), 4)

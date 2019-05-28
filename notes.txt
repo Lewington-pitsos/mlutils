@@ -1,0 +1,5 @@
+tun tests command:
+
+    python3 -m unittest discover mlutils
+
+    python3 -m unittest discover <directory>
