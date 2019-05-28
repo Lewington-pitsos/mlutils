@@ -6,6 +6,7 @@ class GridSearcher(Searcher):
     def __init__(self, params: ParamDict):
         self.params = params        
         self.paramIndices = {}
+        self.started = False
 
         for param in params:
             self.paramIndices[param] = 0
@@ -16,7 +17,10 @@ class GridSearcher(Searcher):
 
 
     def __next__(self) -> IntDict:
-        if self.param_step():
+        if not self.started:
+            self.started = True
+            return self.current_params()
+        elif self.param_step():
             return self.current_params()
         else:
             raise StopIteration
