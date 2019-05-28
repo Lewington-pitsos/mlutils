@@ -4,7 +4,7 @@ from .xgbtypes import IntDict
 
 class Searcher(metaclass=ABCMeta):
     @abstractmethod
-    def __iter__(self) -> Type[Searcher]:
+    def __iter__(self):
         pass
 
     @abstractmethod

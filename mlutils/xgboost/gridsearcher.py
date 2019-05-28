@@ -7,7 +7,7 @@ class GridSearcher(Searcher):
         self.params = params        
         self.paramIndices = {}
 
-        for param, values in params:
+        for param in params:
             self.paramIndices[param] = 0
         
 
@@ -24,7 +24,7 @@ class GridSearcher(Searcher):
 
     def param_step(self) -> bool:
         updated = False
-        for param, index in self.paramIndices:
+        for param in self.paramIndices:
             if self.untried_values_for(param):
                 self.paramIndices[param] += 1
                 updated = True
@@ -34,8 +34,8 @@ class GridSearcher(Searcher):
             
     def current_params(self) -> IntDict:
         current_params = {}
-        for param, index in self.paramIndices:
-            current_params[param] = self.params[index]
+        for param, index in self.paramIndices.items():
+            current_params[param] = self.params[param][index]
         
         return current_params
 
