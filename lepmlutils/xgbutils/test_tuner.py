@@ -11,14 +11,11 @@ class TestPartition(unittest.TestCase):
         dirname = os.path.dirname(__file__)
         dataset = pd.read_csv(dirname + "/resources/train.csv")
         
-        features = [
-            "Pclass", 
-            "Sex", 
+        features = [ 
             "Age", 
             "SibSp", 
             "Parch", 
             "Fare", 
-            "Embarked"
         ]
         target = [
             "Survived",

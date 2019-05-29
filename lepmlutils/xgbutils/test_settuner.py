@@ -22,7 +22,7 @@ def simple_preprocess(dataset):
 class TestTuner(unittest.TestCase):
     def testEmptyTuner(self):
         tuner: SetTuner = SetTuner()
-        self.assertRaises(ValueError, tuner.tune, {}, {}, None, None, None, None)
+        self.assertRaises(ValueError, tuner.tune, {}, {}, None, None, None, None, True)
         self.assertRaises(RuntimeError, tuner.best_params)
         self.assertRaises(RuntimeError, tuner.best_n_params, 0)
 
@@ -62,6 +62,7 @@ class TestTuner(unittest.TestCase):
             teach[target].values.ravel(),
             valid[features],
             valid[target],
+            True,
         )
 
         self.assertEqual(4, len(results))

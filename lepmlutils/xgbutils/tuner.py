@@ -21,19 +21,19 @@ class Tuner(Recorder):
         targets: List[str],
         folds: int,
     ) -> List[Dict]:
-        folds = Partition(dataset, folds)
+        partitions = Partition(dataset, folds)
 
-        for split in folds:
+        for split in partitions:
             fold_records = self.tuner.tune(
                 search_params,
                 set_params,
                 split["train"][features],
-                split["train"][targets],
+                split["train"][targets].values.ravel(),
                 split["test"][features],
                 split["test"][targets]
             )
 
-            self.records.append(*fold_records)
+            self.records = self.records + fold_records
 
         self.sort_records()
         return self.records 
