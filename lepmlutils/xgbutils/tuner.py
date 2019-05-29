@@ -40,19 +40,21 @@ class Tuner():
 
             classifier = xgb.XGBClassifier(**args)
             classifier.fit(self.train_features, self.train_targets)
-            score: float = classifier.score(self.test_features, self.test_targets)
-            self.save_score(args, score)
+            train_score: float = classifier.score(self.train_features, self.train_targets)
+            test_score: float = classifier.score(self.test_features, self.test_targets)
+            self.save_score(args, train_score, test_score)
         self.sort_records()
         return self.records
 
-    def save_score(self, params_used: Dict, score: float):
+    def save_score(self, params_used: Dict, train_score: float, test_score: float):
         self.records.append({
-            "score": score,
+            "test_score": test_score,
+            "train_score": train_score,
             "params": params_used
         })
     
     def sort_records(self):
-        self.records = sorted(self.records, key = lambda i: i["score"], reverse=True)
+        self.records = sorted(self.records, key = lambda i: i["test_score"], reverse=True)
     
     def best_n_params(self, records_wanted: int) -> List[Dict]:
         self.confirm_records()
