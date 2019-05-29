@@ -1,5 +1,7 @@
 import unittest
+from typing import Type
 from .gridsearcher import GridSearcher
+from .searcher import Searcher
 
 class TestGridSearcher(unittest.TestCase):
     def setUp(self):
@@ -9,7 +11,9 @@ class TestGridSearcher(unittest.TestCase):
         }
 
     def test_iterates_correctly(self):
-        srch = GridSearcher(self.params)
+        srch: Searcher = GridSearcher(self.params)
+
+        srch.__iter__()
 
         for candidates in srch:
             self.assertTrue("a" in candidates.keys())
@@ -43,7 +47,7 @@ class TestGridSearcher(unittest.TestCase):
             "b": [11.0]
         }
         
-        srch = GridSearcher(params)
+        srch: Searcher = GridSearcher(params)
 
         first_candidates = next(srch)
 

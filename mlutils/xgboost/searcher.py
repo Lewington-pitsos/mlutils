@@ -1,16 +1,12 @@
 from abc import ABCMeta, abstractmethod
-from typing import Type
-from .xgbtypes import IntDict
+from __future__ import annotations
+from typing import Dict
 
 class Searcher(metaclass=ABCMeta):
     @abstractmethod
-    def __iter__(self):
+    def __iter__(self) -> "Searcher":
         pass
 
     @abstractmethod
-    def __next__(self) -> IntDict:
-        pass
-
-    @abstractmethod
-    def finished(self) -> bool:
+    def __next__(self) -> Dict:
         pass

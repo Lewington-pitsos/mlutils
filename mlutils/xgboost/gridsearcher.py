@@ -1,23 +1,23 @@
 from .searcher import Searcher
-from typing import Dict, List, Type
-from .xgbtypes import ParamDict, IntDict
+from typing import Dict
 
 class GridSearcher(Searcher):
-    def __init__(self, params: ParamDict):
+    params: Dict
+    param_indices: Dict
+    started: bool
+
+    def __init__(self, params: Dict):
         self.params = params        
-        self.paramIndices = {}
+        self.param_indices = {}
         self.started = False
-        self.finished = False
 
         for param in params:
-            self.paramIndices[param] = 0
+            self.param_indices[param] = 0
         
-
-    def __iter__(self) -> Type[Searcher]:
+    def __iter__(self) -> Searcher:
         return self
 
-
-    def __next__(self) -> IntDict:
+    def __next__(self) -> Dict:
         if not self.started:
             self.started = True
             return self.current_params()
@@ -28,20 +28,20 @@ class GridSearcher(Searcher):
 
     def param_step(self) -> bool:
         updated = False
-        for param in self.paramIndices:
+        for param in self.param_indices:
             if self.untried_values_for(param):
-                self.paramIndices[param] += 1
+                self.param_indices[param] += 1
                 updated = True
                 break
         
         return updated
             
-    def current_params(self) -> IntDict:
+    def current_params(self) -> Dict:
         current_params = {}
-        for param, index in self.paramIndices.items():
+        for param, index in self.param_indices.items():
             current_params[param] = self.params[param][index]
         
         return current_params
 
     def untried_values_for(self, param: str):
-        return self.paramIndices[param] < len(self.params[param]) - 1
+        return self.param_indices[param] < len(self.params[param]) - 1

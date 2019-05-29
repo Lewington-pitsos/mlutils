@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/lewington/anaconda3/envs/deploy/bin/python",
+    "python.pythonPath": "env/bin/python",
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true
 }
