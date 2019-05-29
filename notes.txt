@@ -1,5 +1,15 @@
 tun tests command:
 
-    python3 -m unittest discover mlutils
+    python3 -m unittest discover lepmlutils
 
     python3 -m unittest discover <directory>
+
+    python -m unittest discover lepmlutils "test_partition.py"
+
+
+
+building:
+
+    python setup.py bdist_wheel # dist file
+    python setup.py sdist # tar.gz file
+    twine upload dist/* # upload to pypi

@@ -4,15 +4,15 @@ with open("README.md", "r") as fh:
 
 setup(
      name='lepmlutils',  
-     version='0.1',
-     scripts=['lepmlutils'] ,
+     version='1.6',
+     scripts=['mlutils'] ,
      author="Louka Ewington-Pitsos",
      author_email="lewington@student.unimelb.edu.au",
      description="A machine learning utility package",
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="https://github.com/Lewington-pitsos/mlutils",
-     packages=['lepmlutils'],
+     packages=['lepmlutils', 'lepmlutils.xgbutils'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
