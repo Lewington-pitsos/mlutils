@@ -1,5 +1,5 @@
 import xgboost as xgb
-from typing import Dict, List, Type
+from typing import Dict, List
 from .gridsearcher import GridSearcher
 from .searcher import Searcher
 from .recorder import Recorder
