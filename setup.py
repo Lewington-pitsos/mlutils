@@ -1,21 +1,25 @@
-import setuptools
+from setuptools import setup
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setuptools.setup(
-     name='mlutils',  
+setup(
+     name='lepmlutils',  
      version='0.1',
-     scripts=['mlutils'] ,
+     scripts=['lepmlutils'] ,
      author="Louka Ewington-Pitsos",
      author_email="lewington@student.unimelb.edu.au",
      description="A machine learning utility package",
      long_description=long_description,
-   long_description_content_type="text/markdown",
+     long_description_content_type="text/markdown",
      url="https://github.com/Lewington-pitsos/mlutils",
-     packages=setuptools.find_packages(),
+     packages=['lepmlutils'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
          "Operating System :: OS Independent",
      ],
+     install_requires=[
+        'sklearn',
+        'xgboost',
+    ],
  )
