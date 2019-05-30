@@ -20,21 +20,15 @@ def simple_preprocess(dataset):
     dataset["Fare"].fillna(0, inplace=True)    
 
 class TestSetTuner(unittest.TestCase):
-    def testEmptyTuner(self):
-        tuner: SetTuner = SetTuner()
-        self.assertRaises(ValueError, tuner.tune, {}, {}, None, None, None, None, True)
-        self.assertRaises(RuntimeError, tuner.best_params)
-        self.assertRaises(RuntimeError, tuner.best_n_params, 0)
-
-    def testTunesCorrectly(self):
+    def setUp(self):
         dirname = os.path.dirname(__file__)
 
         train = pd.read_csv(dirname + "/resources/train.csv")
         simple_preprocess(train)
         four_fifths = 740
-        teach = train[:four_fifths]
-        valid = train[four_fifths:]
-        features = [
+        self.teach = train[:four_fifths]
+        self.valid = train[four_fifths:]
+        self.features = [
             "Pclass", 
             "Sex", 
             "Age", 
@@ -43,9 +37,17 @@ class TestSetTuner(unittest.TestCase):
             "Fare", 
             "Embarked"
         ]
-        target = [
+        self.target = [
             "Survived",
         ]
+
+    def testEmptyTuner(self):
+        tuner: SetTuner = SetTuner()
+        self.assertRaises(ValueError, tuner.tune, {}, {}, None, None, None, None, True)
+        self.assertRaises(RuntimeError, tuner.best_params)
+        self.assertRaises(RuntimeError, tuner.best_n_params, 0)
+
+    def testTunesCorrectly(self):
         candidates = {
             'max_depth': range(4, 40, 10),
         }
@@ -58,10 +60,10 @@ class TestSetTuner(unittest.TestCase):
         results = tuner.tune(
             candidates, 
             set_params, 
-            teach[features],
-            teach[target].values.ravel(),
-            valid[features],
-            valid[target],
+            self.teach[self.features],
+            self.teach[self.target].values.ravel(),
+            self.valid[self.features],
+            self.valid[self.target],
             True,
         )
 
@@ -78,6 +80,24 @@ class TestSetTuner(unittest.TestCase):
         self.assertEqual(results[3]["params"]["max_depth"], 34)
 
 
+    def test_runs_tunes_correctly(self):
+        candidates = {
+            'max_depth': range(2, 6),
+            'n_estimators': range(10, 60, 10),
+        }
+        set_params = {}
+        tuner: SetTuner = SetTuner()
 
+        results = tuner.tune(
+            candidates, 
+            set_params, 
+            self.teach[self.features],
+            self.teach[self.target].values.ravel(),
+            self.valid[self.features],
+            self.valid[self.target],
+            True,
+        )
+
+        self.assertEqual(20, len(results))
 
 

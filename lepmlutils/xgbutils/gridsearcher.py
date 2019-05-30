@@ -1,5 +1,6 @@
 from .searcher import Searcher
 from typing import Dict
+import itertools
 
 class GridSearcher(Searcher):
     params: Dict
@@ -8,40 +9,15 @@ class GridSearcher(Searcher):
 
     def __init__(self, params: Dict):
         self.params = params        
-        self.param_indices = {}
-        self.started = False
-
-        for param in params:
-            self.param_indices[param] = 0
+        self.perms = itertools.product(*params.values())
         
     def __iter__(self) -> Searcher:
         return self
 
     def __next__(self) -> Dict:
-        if not self.started:
-            self.started = True
-            return self.current_params()
-        elif self.param_step():
-            return self.current_params()
-        else:
-            raise StopIteration                    
-
-    def param_step(self) -> bool:
-        updated = False
-        for param in self.param_indices:
-            if self.untried_values_for(param):
-                self.param_indices[param] += 1
-                updated = True
-                break
-        
-        return updated
-            
-    def current_params(self) -> Dict:
         current_params = {}
-        for param, index in self.param_indices.items():
-            current_params[param] = self.params[param][index]
-        
-        return current_params
+        values = next(self.perms)
+        for index, key in enumerate(self.params.keys()):
+            current_params[key] = values[index] 
 
-    def untried_values_for(self, param: str):
-        return self.param_indices[param] < len(self.params[param]) - 1
+        return current_params                  

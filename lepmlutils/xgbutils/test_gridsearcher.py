@@ -29,9 +29,9 @@ class TestGridSearcher(unittest.TestCase):
             "b": 11
         }, first_candidates)
 
-        next(srch)
-        next(srch)
-        next(srch)
+        for i in range(7):
+            next(srch)
+
         first_candidates = next(srch)
 
         self.assertDictEqual({
@@ -57,3 +57,13 @@ class TestGridSearcher(unittest.TestCase):
         }, first_candidates)
         self.assertRaises(StopIteration, srch.__next__)
 
+    def test_works_with_lots_of_params(self):
+        self.params["c"] = [100, 101, 102, 103]
+        self.params["d"] = [100.1, 101.2, 102.3, 103.4]
+        srch: Searcher = GridSearcher(self.params)
+
+        count = 0
+        for candidate in srch:
+            count += 1
+        
+        self.assertEqual(144, count)

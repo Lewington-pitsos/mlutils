@@ -4,19 +4,21 @@ import pandas as pd
 from .tuner import Tuner
 
 class TestTuner(unittest.TestCase):
-    def test_partitions_correctly(self):
-        dirname = os.path.dirname(__file__)
-        dataset = pd.read_csv(dirname + "/resources/train.csv")
+    def setUp(self):
+        self.dirname = os.path.dirname(__file__)
+        self.dataset = pd.read_csv(self.dirname + "/resources/train.csv")
         
-        features = [ 
+        self.features = [ 
             "Age", 
             "SibSp", 
             "Parch", 
             "Fare", 
         ]
-        target = [
+        self.target = [
             "Survived",
         ]
+
+    def test_partitions_correctly(self):
         candidates = {
             'max_depth': range(4, 40, 10),
         }
@@ -28,9 +30,9 @@ class TestTuner(unittest.TestCase):
         results = tuner.tune(
             candidates,
             set_params,
-            dataset,
-            features,
-            target,
+            self.dataset,
+            self.features,
+            self.target,
             3,
         )
 
@@ -46,3 +48,25 @@ class TestTuner(unittest.TestCase):
         self.assertGreaterEqual(results[0]["test_score"], results[1]["test_score"])
         self.assertGreaterEqual(results[1]["test_score"], results[2]["test_score"])
         self.assertGreaterEqual(results[2]["test_score"], results[3]["test_score"])
+    
+    def test_runs_tunes_correctly(self):
+        candidates = {
+            'max_depth': range(2, 6),
+            'n_estimators': range(10, 60, 10),
+        }
+        set_params = {
+            # "n_estimators": 40,
+        }
+
+        tuner = Tuner()
+        results = tuner.tune(
+            candidates,
+            set_params,
+            self.dataset,
+            self.features,
+            self.target,
+            3,
+        )
+
+        self.assertEqual(20, len(results))
+
