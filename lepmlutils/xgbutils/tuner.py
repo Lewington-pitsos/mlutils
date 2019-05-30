@@ -33,7 +33,12 @@ class Tuner(Recorder):
                 split["test"][targets]
             )
 
-            self.records = self.records + fold_records
+            if (not self.records):
+                self.records = fold_records
+            else:
+                self.aggeregate(fold_records)
 
+        
+        self.average_scores(folds)
         self.sort_records()
         return self.records 

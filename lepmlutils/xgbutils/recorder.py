@@ -21,6 +21,17 @@ class Recorder():
         self.confirm_records()
         self.sort_records()
 
+    def aggeregate(self, new_records: List[Dict]) -> None:
+        if (len(new_records) != len(self.records)):
+            raise ValueError("Records to be aggregated are not the same length as current records")
+        for index, record in enumerate(new_records):
+            self.records[index]["test_score"] += record["test_score"]
+
+    def average_scores(self, folds: int) -> None:
+        for record in self.records:
+            record["test_score"] /= folds
+            record["train_score"] /= folds
+
     def confirm_records(self):
         if (len(self.records) == 0):
             raise RuntimeError("Attempt to access tuning results before tuning has occurred")
