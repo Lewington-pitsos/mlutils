@@ -9,7 +9,12 @@ tun tests command:
 
 
 building:
-
+    delete:
+        build
+        dist
+        lepmlutils.egg.info
+        
+    change version!!!
     python setup.py bdist_wheel # dist file
     python setup.py sdist # tar.gz file
     twine upload dist/* # upload to pypi
