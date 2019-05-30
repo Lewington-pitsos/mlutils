@@ -1,19 +1,10 @@
-from .searcher import Searcher
+from .commonsearcher import CommonSearcher
 from typing import Dict
-import itertools
 
-class GridSearcher(Searcher):
-    params: Dict
-    param_indices: Dict
-    started: bool
-
+class GridSearcher(CommonSearcher):
     def __init__(self, params: Dict):
-        self.params = params        
-        self.perms = itertools.product(*params.values())
+        super().__init__(params)       
         
-    def __iter__(self) -> Searcher:
-        return self
-
     def __next__(self) -> Dict:
         current_params = {}
         values = next(self.perms)
