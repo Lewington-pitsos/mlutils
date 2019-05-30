@@ -104,5 +104,24 @@ class TestRecorder(unittest.TestCase):
         self.assertAlmostEqual(r.records[0]["test_score"], 0.6)
         self.assertAlmostEqual(r.records[1]["test_score"], 0.4)
 
-        
+    def test_aggregate_checks_sort(self):
+        records = [
+            {'test_score': 0.9,
+            'train_score': 0.7,
+            'params': {'n_estimators': 260,
+            'subsample': 0.7800000000000002,
+            'min_split_loss': 0.75,
+            'max_depth': 8}},
+            {'test_score': 0.60,
+            'train_score': 1.0,
+            'params': {'n_estimators': 260,
+            'subsample': 0.9600000000000004,
+            'min_split_loss': 0.75,
+            'max_depth': 8}},
+        ]
+
+        records2 = records[::-1]
+        r = Recorder()
+        r.records = records
+        self.assertRaises(AssertionError, r.aggeregate, records2)
         

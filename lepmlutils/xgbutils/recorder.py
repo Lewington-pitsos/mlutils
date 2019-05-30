@@ -25,7 +25,13 @@ class Recorder():
         if (len(new_records) != len(self.records)):
             raise ValueError("Records to be aggregated are not the same length as current records")
         for index, record in enumerate(new_records):
-            self.records[index]["test_score"] += record["test_score"]
+            current_record = self.records[index]
+
+            for key, value in current_record["params"].items():
+                assert(value == record["params"][key])
+
+            current_record["test_score"] += record["test_score"]
+            current_record["train_score"] += record["train_score"]
 
     def average_scores(self, folds: int) -> None:
         for record in self.records:

@@ -30,7 +30,8 @@ class Tuner(Recorder):
                 split["train"][features],
                 split["train"][targets].values.ravel(),
                 split["test"][features],
-                split["test"][targets]
+                split["test"][targets],
+                False,
             )
 
             if (not self.records):

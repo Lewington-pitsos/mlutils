@@ -19,7 +19,7 @@ def simple_preprocess(dataset):
     dataset["Age"].fillna(0, inplace=True)
     dataset["Fare"].fillna(0, inplace=True)    
 
-class TestTuner(unittest.TestCase):
+class TestSetTuner(unittest.TestCase):
     def testEmptyTuner(self):
         tuner: SetTuner = SetTuner()
         self.assertRaises(ValueError, tuner.tune, {}, {}, None, None, None, None, True)
