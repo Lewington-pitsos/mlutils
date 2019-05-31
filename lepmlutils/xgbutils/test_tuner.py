@@ -24,6 +24,7 @@ class TestTuner(unittest.TestCase):
         }
         set_params = {
             "n_estimators": 40,
+            "seed": 3
         }
 
         tuner = Tuner()

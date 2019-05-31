@@ -1,16 +1,15 @@
+import xgboost as xgb
 from typing import Dict, List
 from pandas import DataFrame
+from .gridsearcher import GridSearcher
 from .recorder import Recorder
 from .partition import Partition
-from .settuner import SetTuner
+
 
 class Tuner(Recorder):
-
-    tuner: SetTuner
-
     def __init__(self):
-        self.tuner = SetTuner()
         super().__init__()
+        pass
     
     def tune(
         self, 
@@ -21,25 +20,56 @@ class Tuner(Recorder):
         targets: List[str],
         folds: int,
     ) -> List[Dict]:
-        partitions = Partition(dataset, folds)
+        if (len(search_params) == 0):
+            raise ValueError("No search parameters provided")
 
-        for split in partitions:
-            fold_records = self.tuner.tune(
-                search_params,
-                set_params,
-                split["train"][features],
-                split["train"][targets].values.ravel(),
-                split["test"][features],
-                split["test"][targets],
-                False,
-            )
+        self.param_searcher = GridSearcher(search_params)
+        self.set_params = set_params
+        self.dataset = dataset
+        self.folds = folds
+        self.features = features
+        self.targets = targets
+        self.records = []
 
-            if (not self.records):
-                self.records = fold_records
-            else:
-                self.aggeregate(fold_records)
+        return self.tune_classifier()
 
+    def tune_classifier(self) -> List[Dict]:
+        for candidates in self.param_searcher:
+            args: Dict = {**self.set_params, **candidates}
+            # Note: candidates override set_params here.
+            self.records.append(self.score_parameters(args))
         
-        self.average_scores(folds)
         self.sort_records()
-        return self.records 
+        return self.records
+
+    def score_parameters(self, params: Dict):
+        cl = xgb.XGBClassifier(**params)
+        folds = Partition(self.dataset, self.folds)
+        record = {
+            "test_score": 0,
+            "train_score": 0,
+            "params": params
+        }
+        for fold in folds:
+            train_features = fold["train"][self.features]
+            train_targets = fold["train"][self.targets]
+            test_features = fold["test"][self.features]
+            test_targets = fold["test"][self.targets]
+            cl.fit(train_features, train_targets)
+            record["train_score"] += cl.score(train_features, train_targets)
+            record["test_score"] += cl.score(test_features, test_targets)
+        
+        return record
+
+    
+    def tune_and_sort(self) -> List[Dict]:
+        self.tune_classifier()
+        self.sort_records()
+        return self.records
+        
+    def save_score(self, params_used: Dict, train_score: float, test_score: float):
+        self.records.append({
+            "test_score": test_score,
+            "train_score": train_score,
+            "params": params_used
+        })
