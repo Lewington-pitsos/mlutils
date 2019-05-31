@@ -19,11 +19,12 @@ class Tuner(Recorder):
         features: List[str],
         targets: List[str],
         folds: int,
+        search_type = GridSearcher,
     ) -> List[Dict]:
         if (len(search_params) == 0):
             raise ValueError("No search parameters provided")
 
-        self.param_searcher = GridSearcher(search_params)
+        self.param_searcher = search_type(search_params)
         self.set_params = set_params
         self.dataset = dataset
         self.folds = folds
@@ -35,16 +36,16 @@ class Tuner(Recorder):
 
     def tune_classifier(self) -> List[Dict]:
         for candidates in self.param_searcher:
+            # Candidates will override conflicting self.set_params
             args: Dict = {**self.set_params, **candidates}
-            # Note: candidates override set_params here.
             self.records.append(self.score_parameters(args))
         
         self.sort_records()
         return self.records
 
     def score_parameters(self, params: Dict):
-        cl = xgb.XGBClassifier(**params)
         folds = Partition(self.dataset, self.folds)
+        cl = xgb.XGBClassifier(**params)
         record = {
             "test_score": 0,
             "train_score": 0,
@@ -55,7 +56,7 @@ class Tuner(Recorder):
             train_targets = fold["train"][self.targets]
             test_features = fold["test"][self.features]
             test_targets = fold["test"][self.targets]
-            cl.fit(train_features, train_targets)
+            cl.fit(train_features, train_targets.values.ravel())
             record["train_score"] += cl.score(train_features, train_targets)
             record["test_score"] += cl.score(test_features, test_targets)
         

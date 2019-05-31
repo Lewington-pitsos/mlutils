@@ -2,6 +2,8 @@ import unittest
 import os
 import pandas as pd
 from .tuner import Tuner
+from .randsearcher import RandSearcher
+from .randgridsearcher import RandGridSearcher
 
 class TestTuner(unittest.TestCase):
     def setUp(self):
@@ -40,7 +42,7 @@ class TestTuner(unittest.TestCase):
         self.assertEqual(4, len(results))
         for params in results:
             self.assertEqual(params["params"]["n_estimators"], 40)
-        
+            
         self.assertEqual(results[0]["params"]["max_depth"], 4)
         self.assertEqual(results[1]["params"]["max_depth"], 24)
         self.assertEqual(results[2]["params"]["max_depth"], 34)
@@ -51,6 +53,27 @@ class TestTuner(unittest.TestCase):
         self.assertGreaterEqual(results[2]["test_score"], results[3]["test_score"])
     
     def test_runs_tunes_correctly(self):
+        candidates = {
+            'max_depth': range(2, 6),
+            'n_estimators': range(10, 50, 10),
+        }
+        set_params = {
+            # "n_estimators": 40,
+        }
+
+        tuner = Tuner()
+        results = tuner.tune(
+            candidates,
+            set_params,
+            self.dataset,
+            self.features,
+            self.target,
+            3,
+        )
+
+        self.assertEqual(16, len(results))
+
+    def test_rand_search(self):
         candidates = {
             'max_depth': range(2, 6),
             'n_estimators': range(10, 60, 10),
@@ -67,7 +90,30 @@ class TestTuner(unittest.TestCase):
             self.features,
             self.target,
             3,
+            RandSearcher,
         )
 
-        self.assertEqual(20, len(results))
+        self.assertEqual(60, len(results))
+
+    def test_grid_rand_search(self):
+        candidates = {
+            'max_depth': range(2, 6),
+            'n_estimators': range(10, 40, 10),
+        }
+        set_params = {
+            # "n_estimators": 40,
+        }
+
+        tuner = Tuner()
+        results = tuner.tune(
+            candidates,
+            set_params,
+            self.dataset,
+            self.features,
+            self.target,
+            3,
+            RandGridSearcher,
+        )
+
+        self.assertEqual(12, len(results))
 
