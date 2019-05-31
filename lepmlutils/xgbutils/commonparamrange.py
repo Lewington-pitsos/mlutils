@@ -1,4 +1,3 @@
-from typing import List
 from .paramrange import ParamRange
 
 class CommonParamRange(ParamRange):

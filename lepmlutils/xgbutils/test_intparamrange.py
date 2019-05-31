@@ -1,5 +1,4 @@
 import unittest
-from typing import List
 from .intparamrange import IntParamRange
 from .paramrange import ParamRange
 
