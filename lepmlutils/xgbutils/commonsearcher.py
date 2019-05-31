@@ -8,8 +8,11 @@ class CommonSearcher(Searcher):
     started: bool
 
     def __init__(self, params: Dict):
-        self.params = params        
-        self.perms = itertools.product(*params.values())
+        self.params = params
+        index_lists = []
+        for lst in params.values():
+            index_lists.append(list(range(0, len(lst))))       
+        self.perms = itertools.product(*index_lists)
         
     def __iter__(self) -> Searcher:
         return self               

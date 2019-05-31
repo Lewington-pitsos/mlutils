@@ -29,7 +29,15 @@ class TestGridSearcher(unittest.TestCase):
             "b": 11
         }, first_candidates)
 
-        for i in range(7):
+        second_candidates = next(srch)
+
+
+        self.assertDictEqual({
+            "a": 2,
+            "b": 22
+        }, second_candidates)
+
+        for i in range(6):
             next(srch)
 
         first_candidates = next(srch)
