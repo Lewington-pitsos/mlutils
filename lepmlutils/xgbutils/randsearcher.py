@@ -14,6 +14,7 @@ class RandSearcher(CommonSearcher):
 
     def __init__(self, params: Dict):
         super().__init__(params)
+        self.ranges = {}
         for name, values in params.items():
             self.ranges[name] = self.range_for(name, values)
 

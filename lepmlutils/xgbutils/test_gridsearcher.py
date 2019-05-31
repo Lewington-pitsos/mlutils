@@ -71,7 +71,7 @@ class TestGridSearcher(unittest.TestCase):
         srch: Searcher = GridSearcher(self.params)
 
         count = 0
-        for candidate in srch:
+        for _ in srch:
             count += 1
         
         self.assertEqual(144, count)
