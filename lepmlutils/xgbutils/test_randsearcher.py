@@ -35,29 +35,36 @@ class TestRandSearcher(unittest.TestCase):
 
         self.assertRaises(StopIteration, srch.__next__)
 
-    # def test_works_with_small_params(self):
-    #     params = {
-    #         "a": [2.3],
-    #         "b": [11.0]
-    #     }
+    def test_works_with_small_params(self):
+        params = {
+            "a": [2.3],
+            "b": [11.0]
+        }
         
-    #     srch: Searcher = RandSearcher(params)
+        srch: Searcher = RandSearcher(params)
 
-    #     first_candidates = next(srch)
+        first_candidates = next(srch)
 
-    #     self.assertDictEqual({
-    #         "a": 2.3,
-    #         "b": 11.0
-    #     }, first_candidates)
-    #     self.assertRaises(StopIteration, srch.__next__)
+        self.assertDictEqual({
+            "a": 2.3,
+            "b": 11.0
+        }, first_candidates)
 
-    # def test_works_with_lots_of_params(self):
-    #     self.params["c"] = [100, 101, 102, 103]
-    #     self.params["d"] = [100.1, 101.2, 102.3, 103.4]
-    #     srch: Searcher = RandSearcher(self.params)
+        second_candidates = next(srch)
 
-    #     count = 0
-    #     for _ in srch:
-    #         count += 1
+        self.assertDictEqual({
+            "a": 2.3,
+            "b": 11.0
+        }, second_candidates)
+
+
+    def test_works_with_lots_of_params(self):
+        self.params["c"] = [100, 101, 102, 103, 105, 109, 110]
+        self.params["d"] = [100.1, 101.2, 102.3, 103.4]
+        srch: Searcher = RandSearcher(self.params)
+
+        count = 0
+        for _ in srch:
+            count += 1
         
-    #     self.assertEqual(144, count)
+        self.assertEqual(60, count)
