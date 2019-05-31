@@ -11,3 +11,10 @@ def process_col(col: pd.Series, df: pd.DataFrame):
     if col.isna().any():
         bad_col_name = col.name + "_is_bad"
         assert(bad_col_name not in df)
+
+        df[bad_col_name] = 0
+        df[bad_col_name].loc[col.isna()] = 1
+
+def replace_bad_values_with_median(col: pd.Series):
+    if col.isna().any():
+        col.fillna(col.median())
