@@ -19,7 +19,7 @@ class TestFloatParamRange(unittest.TestCase):
             val = p.value(0)
             counted_vals[val] = True
 
-        self.assertEqual(len(counted_vals), 11)
+        self.assertEqual(len(counted_vals), 9)
 
         for val in counted_vals.keys():
             self.assertGreaterEqual(val, 2.0)
@@ -31,7 +31,7 @@ class TestFloatParamRange(unittest.TestCase):
             val = p.value(3)
             counted_vals[val] = True
 
-        self.assertEqual(len(counted_vals), 11)
+        self.assertEqual(len(counted_vals), 9)
 
         for val in counted_vals.keys():
             self.assertGreaterEqual(val, 7.0)
