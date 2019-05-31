@@ -5,11 +5,11 @@ from .intparamrange import IntParamRange
 from .floatparamrange import FloatParamRange
 from .strparamrange import StrParamRange
 
-# RandSearcher is aimed at exploring the hyperparameter 
+# RandGridSearcher is aimed at exploring the hyperparameter 
 # space more effectively than grid search by making each
 # hyperparameter value somewhat random. In particular no
 # hyperparameter value should be repeated. 
-class RandSearcher(CommonSearcher):
+class RandGridSearcher(CommonSearcher):
     def __init__(self, params: Dict):
         super().__init__(params)
         self.ranges = {}

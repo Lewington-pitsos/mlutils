@@ -1,9 +1,9 @@
 import unittest
 from typing import Type
-from .randsearcher import RandSearcher
+from .randgridsearcher import RandGridSearcher
 from .searcher import Searcher
 
-class TestRandSearcher(unittest.TestCase):
+class TestRandGridSearcher(unittest.TestCase):
     def setUp(self):
         self.params = {
             "a": [2, 4, 6],
@@ -11,7 +11,7 @@ class TestRandSearcher(unittest.TestCase):
         }
 
     def test_iterates_correctly(self):
-        srch: Searcher = RandSearcher(self.params)
+        srch: Searcher = RandGridSearcher(self.params)
 
         srch.__iter__()
 
@@ -21,7 +21,7 @@ class TestRandSearcher(unittest.TestCase):
 
     def test_iterates_exhaustively(self):
         for _ in range(100):
-            srch = RandSearcher(self.params)
+            srch = RandGridSearcher(self.params)
 
             first_candidates = next(srch)
 
@@ -56,7 +56,7 @@ class TestRandSearcher(unittest.TestCase):
             "b": [11.0]
         }
         
-        srch: Searcher = RandSearcher(params)
+        srch: Searcher = RandGridSearcher(params)
 
         first_candidates = next(srch)
 
@@ -69,7 +69,7 @@ class TestRandSearcher(unittest.TestCase):
     def test_works_with_lots_of_params(self):
         self.params["c"] = [100, 101, 102, 103]
         self.params["d"] = [100.1, 101.2, 102.3, 103.4]
-        srch: Searcher = RandSearcher(self.params)
+        srch: Searcher = RandGridSearcher(self.params)
 
         count = 0
         for _ in srch:
