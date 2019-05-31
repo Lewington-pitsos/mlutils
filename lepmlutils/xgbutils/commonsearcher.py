@@ -3,10 +3,6 @@ from typing import Dict
 import itertools
 
 class CommonSearcher(Searcher):
-    params: Dict
-    param_indices: Dict
-    started: bool
-
     def __init__(self, params: Dict):
         self.params = params
         index_lists = []

@@ -1,8 +1,6 @@
 from typing import Dict, List
 
 class Recorder():
-    records: List[Dict]
-
     def __init__(self):
         self.records = []
     

@@ -5,6 +5,8 @@ from typing import List
 from .commonparamrange import CommonParamRange
 
 class FloatParamRange(CommonParamRange):
+    PRECISION = 10
+
     def value(self, index: int) -> float:
         super().value(index)
         return self.range_for(index)
@@ -27,4 +29,4 @@ class FloatParamRange(CommonParamRange):
         return lower_bound + self.portion(lower_bound, upper_bound)
         
     def portion(self, lower_bound: float, upper_bound: float) -> float:
-        return ((upper_bound - lower_bound) / 10) * random.randint(1, 9)
+        return ((upper_bound - lower_bound) / FloatParamRange.PRECISION) * random.randint(1, FloatParamRange.PRECISION - 1)

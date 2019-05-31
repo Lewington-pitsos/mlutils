@@ -10,8 +10,6 @@ from .strparamrange import StrParamRange
 # hyperparameter value somewhat random. In particular no
 # hyperparameter value should be repeated. 
 class RandSearcher(CommonSearcher):
-    ranges: Dict[str, ParamRange]
-
     def __init__(self, params: Dict):
         super().__init__(params)
         self.ranges = {}
@@ -27,7 +25,6 @@ class RandSearcher(CommonSearcher):
             return FloatParamRange(name, values)
         else:
             return StrParamRange(name, values)
-
 
     def __next__(self) -> Dict:
         current_params = {}

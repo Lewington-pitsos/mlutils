@@ -5,9 +5,6 @@ from typing import List, Dict
 import numpy as np
 
 class Partition():
-    folds: List[DataFrame]
-    test_index: int
-
     def __init__(self, dataset: DataFrame, folds: int):
         self.folds = np.array_split(dataset, folds)
         self.test_index = 0

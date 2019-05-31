@@ -1,9 +1,6 @@
 from .paramrange import ParamRange
 
 class CommonParamRange(ParamRange):
-    name: str
-    values: list
-
     def __init__(self, name: str, param_range: list):
         self.name = name
         self.values = param_range

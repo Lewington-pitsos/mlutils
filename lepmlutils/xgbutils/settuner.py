@@ -5,9 +5,6 @@ from .searcher import Searcher
 from .recorder import Recorder
 
 class SetTuner(Recorder):
-    param_searcher: Searcher
-    set_params: Dict
-
     def __init__(self):
         super().__init__()
         pass
