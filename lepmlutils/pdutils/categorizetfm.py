@@ -2,7 +2,6 @@ from .transform import Transform
 from .taggeddataframe import TaggedDataFrame
 from .coltag import ColTag
 from typing import List
-import pandas as pd
 
 # CategorizeTfm casts all string/object columns to category
 # columns and for each of these creates an integer mapping 

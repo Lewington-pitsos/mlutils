@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from .taggeddataframe import TaggedDataFrame
 from .categorizetfm import CategorizeTfm
+from .coltag import ColTag
 
 class TestCategorization(unittest.TestCase):
     def setUp(self):
@@ -12,12 +13,19 @@ class TestCategorization(unittest.TestCase):
     def test_converts_objects_to_categorical(self):
         self.assertEqual(43, len(self.houses.frame.select_dtypes(include="object").columns))
         self.assertEqual(0, len(self.houses.frame.select_dtypes(include="category").columns))
+        self.assertEqual(0, len(self.houses.tagged_as(ColTag.modified)))
+        self.assertEqual(0, len(self.houses.tagged_as(ColTag.mapping)))
+        self.assertEqual(0, len(self.houses.tagged_as(ColTag.categorized)))
+
 
         tfm: CategorizeTfm = CategorizeTfm()
         tfm.operate(self.houses)
         self.assertEqual(0, len(self.houses.frame.select_dtypes(include="object").columns))
         self.assertEqual(43, len(self.houses.frame.select_dtypes(include="category").columns))
         self.assertEqual(124, len(self.houses.frame.columns))
+        self.assertEqual(43, len(self.houses.tagged_as(ColTag.categorized)))
+        self.assertEqual(43, len(self.houses.tagged_as(ColTag.modified)))
+        self.assertEqual(43, len(self.houses.tagged_as(ColTag.mapping)))
 
     def test_raises_error_on_col_name_conflicts(self):
         tfm: CategorizeTfm = CategorizeTfm()

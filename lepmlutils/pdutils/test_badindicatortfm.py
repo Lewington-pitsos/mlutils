@@ -26,4 +26,4 @@ class TestAddBadIndicator(unittest.TestCase):
         self.assertEqual(687, self.dataset.frame["Cabin_is_bad"].sum())
         self.assertEqual(2, self.dataset.frame["Embarked_is_bad"].sum())
         self.assertEqual(177, self.dataset.frame["Age_is_bad"].sum())
-        # self.assertEqual(3, self.dataset.tags.tagged_as())
+        self.assertEqual(3, len(self.dataset.tagged_as(ColTag.bad_indicator)))

@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from .medianreplacetfm import MedianReplaceTfm
 from .taggeddataframe import TaggedDataFrame
+from .coltag import ColTag
 
 class TestColumnReplace(unittest.TestCase):
     def setUp(self):
@@ -15,6 +16,7 @@ class TestColumnReplace(unittest.TestCase):
         self.assertEqual(25, (self.dataset.frame["Age"] == 28.0).sum())
         self.assertEqual(687, self.dataset.frame["Cabin"].isna().sum())
         self.assertEqual(2, self.dataset.frame["Embarked"].isna().sum())
+        self.assertEqual(0, len(self.houses.tagged_as(ColTag.modified)))
 
         tfm = MedianReplaceTfm()
         tfm.operate(self.dataset)
@@ -22,12 +24,16 @@ class TestColumnReplace(unittest.TestCase):
         self.assertEqual(202, (self.dataset.frame["Age"] == 28.0).sum())
         self.assertEqual(687, (self.dataset.frame["Cabin"] == "unknown").sum())
         self.assertEqual(2, (self.dataset.frame["Embarked"] == "unknown").sum())
+        self.assertEqual(3, len(self.dataset.tagged_as(ColTag.modified)))
 
     def test_raises_adds_bad_value_columns_for_house_data(self):
         self.assertEqual(19, self.houses.frame.isna().any().sum())
+        self.assertEqual(0, len(self.houses.tagged_as(ColTag.modified)))
         tfm = MedianReplaceTfm()
         tfm.operate(self.houses)
         self.assertEqual(0, self.houses.frame.isna().any().sum())
+        self.assertEqual(19, len(self.houses.tagged_as(ColTag.modified)))
+
 
     def test_raises_adds_bad_value_columns_no_existing_unknowns(self):
         tfm = MedianReplaceTfm()
