@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 
 setup(
      name='lepmlutils',  
-     version='1.84',
+     version='1.85',
      scripts=['mlutils'] ,
      author="Louka Ewington-Pitsos",
      author_email="lewington@student.unimelb.edu.au",
@@ -12,7 +12,7 @@ setup(
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="https://github.com/Lewington-pitsos/mlutils",
-     packages=['lepmlutils', 'lepmlutils.xgbutils'],
+     packages=['lepmlutils', 'lepmlutils.xgbutils', 'lepmlutils.pdutils'],
      classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License",
