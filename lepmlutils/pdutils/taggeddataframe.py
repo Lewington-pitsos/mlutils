@@ -3,12 +3,13 @@ from .coltag import ColTag
 from pandas import DataFrame
 from collections import defaultdict
 
-# ColTracker knows all the column names of a DataFrame and which
+# TaggedDataFrame knows all the column names of a DataFrame and which
 # tags each has been given. It can return a list of column names
 # based on given tags.
-class ColTracker():
+class TaggedDataFrame():
     def __init__(self, df: DataFrame):
         self.tags: Dict[str, List[ColTag]] = defaultdict(lambda: [])
+        self.frame = df
         for name in df.columns.values:
             self.tags[name] = [ColTag.original]
 

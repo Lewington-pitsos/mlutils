@@ -1,6 +1,7 @@
 import unittest
 import os
 from .lepdataframe import LepDataFrame
+from .badindicatortfm import BadIndicatorTfm
 import pandas as pd
 
 class TestLepDataFrame(unittest.TestCase):
@@ -10,3 +11,5 @@ class TestLepDataFrame(unittest.TestCase):
 
     def test_applies_transform(self):
         l = LepDataFrame(self.dataset)
+        tfm = BadIndicatorTfm()
+        l.apply(tfm)

@@ -1,11 +1,11 @@
-from .coltracker import ColTracker
+from .transform import Transform
+from .taggeddataframe import TaggedDataFrame
 from pandas import DataFrame
 
-class LepDataFrame(ColTracker):
+class LepDataFrame():
     def __init__(self, df: DataFrame):
-        super().__init__(df)
-        self.df: DataFrame = df
+        self.tagged_df = TaggedDataFrame(df)
+        self.frame = df
     
-    @property
-    def _constructor(self):
-        return LepDataFrame
+    def apply(self, tfm: Transform):
+        tfm.operate(self.tagged_df)

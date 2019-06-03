@@ -11,17 +11,17 @@ class TestAddBadIndicator(unittest.TestCase):
 
     def test_raises_errors_for_column_overwrite(self):
         tfm = BadIndicatorTfm()
-        self.dataset.df["Cabin_is_bad"] = 9
+        self.dataset.frame["Cabin_is_bad"] = 9
 
         self.assertRaises(AssertionError, tfm.operate, self.dataset)
 
     def test_raises_adds_bad_value_columns(self):
         tfm = BadIndicatorTfm()
 
-        self.assertEqual(12, len(self.dataset.df.columns))
-        tfm.operate(self.dataset)
+        self.assertEqual(12, len(self.dataset.frame.columns))
+        tfm.operate(self.dataset.frame)
 
-        self.assertEqual(15, len(self.dataset.df.columns))
-        self.assertEqual(687, self.dataset.df["Cabin_is_bad"].sum())
-        self.assertEqual(2, self.dataset.df["Embarked_is_bad"].sum())
-        self.assertEqual(177, self.dataset.df["Age_is_bad"].sum())
+        self.assertEqual(15, len(self.dataset.frame.columns))
+        self.assertEqual(687, self.dataset.frame["Cabin_is_bad"].sum())
+        self.assertEqual(2, self.dataset.frame["Embarked_is_bad"].sum())
+        self.assertEqual(177, self.dataset.frame["Age_is_bad"].sum())
