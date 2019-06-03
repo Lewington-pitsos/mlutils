@@ -19,4 +19,7 @@ sed -i "s/version.*/version='$1',/" setup.py
 python setup.py bdist_wheel 
 python setup.py sdist
 
+# upload to pypi
+twine upload dist/*
+
 exit
