@@ -43,9 +43,22 @@ class TestColumnReplace(unittest.TestCase):
     def test_raises_adds_bad_value_columns_for_house_data(self):
         self.assertEqual(19, self.houses.isna().any().sum())
 
-        replace_bad_values_with_median(self.dataset)
-        self.assertEqual(0, self.dataset.isna().any().sum())
+        replace_bad_values_with_median(self.houses)
+        self.assertEqual(0, self.houses.isna().any().sum())
 
     def test_raises_adds_bad_value_columns_no_existing_unknowns(self):
         self.dataset.loc[0, "Cabin"] = "unknown"
         self.assertRaises(AssertionError, replace_bad_values_with_median, self.dataset)
+
+class TestBasicBadValEliminate(unittest.TestCase):
+    def setUp(self):
+        dirname = os.path.dirname(__file__)
+        self.houses = pd.read_csv(dirname + "/resources/houses_train.csv")
+    
+    def test_raises_adds_bad_value_columns_for_house_data(self):
+        self.assertEqual(19, self.houses.isna().any().sum())
+        self.assertEqual(81, len(self.houses.columns))
+
+        remove_bad_vals_basic(self.houses)
+        self.assertEqual(0, self.houses.isna().any().sum())
+        self.assertEqual(100, len(self.houses.columns))

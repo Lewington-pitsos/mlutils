@@ -14,7 +14,7 @@ def process_col(col: pd.Series, df: pd.DataFrame):
         assert(bad_col_name not in df)
 
         df[bad_col_name] = 0
-        df[bad_col_name].loc[col.isna()] = 1
+        df.loc[df[col.name].isna(), bad_col_name] = 1
 
 def replace_bad_values_with_median(df: pd.DataFrame):
         df.apply(replace_bad_col_values_with_median, args=(df,))
@@ -26,3 +26,7 @@ def replace_bad_col_values_with_median(col: pd.Series, df:pd.DataFrame):
         except TypeError: 
                 assert "unknown" not in col.values
                 df[col.name] = col.fillna("unknown")
+
+def remove_bad_vals_basic(df: pd.DataFrame):
+        add_bad_indicator_vars(df)
+        replace_bad_values_with_median(df)
