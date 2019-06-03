@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Set
 from .coltag import ColTag
 from pandas import DataFrame
 from collections import defaultdict
@@ -21,6 +21,16 @@ class TaggedDataFrame():
                 col_names.append(name)
 
         return col_names
+    
+    def retrive(self, with_tags: List[ColTag] = [], without: List[ColTag] = []) -> List[str]:
+        cols_wanted: Set[str] = set()
+        for tag in with_tags:
+            cols_wanted = cols_wanted.union(set(self.tagged_as(tag))) 
+        
+        for tag in without:
+            cols_wanted = cols_wanted.difference(set(self.tagged_as(tag)))
+
+        return list(cols_wanted)
     
     def tag_column(self, name: str, tag: ColTag) -> None:
         self.tags[name].append(tag)

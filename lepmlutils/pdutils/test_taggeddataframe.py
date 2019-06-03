@@ -5,7 +5,7 @@ from typing import List
 from .coltag import ColTag
 import pandas as pd
 
-class TestCollTracker(unittest.TestCase):
+class TestTaggedDataFrame(unittest.TestCase):
     def setUp(self):
         dirname = os.path.dirname(__file__)
         self.dataset = pd.read_csv(dirname + "/resources/train.csv")
@@ -42,3 +42,43 @@ class TestCollTracker(unittest.TestCase):
         t.tag_column("NewCol", ColTag.mapping)
         mapping: List[str] = t.tagged_as(ColTag.mapping)
         self.assertEqual(1, len(mapping))
+
+    def test_advanced_column_retrival(self):
+        t:TaggedDataFrame =TaggedDataFrame(self.dataset)
+        t.tag_column("Cabin", ColTag.modified)
+        self.assertEqual(
+            len(self.dataset.columns.values) - 1, 
+            len(t.retrive([ColTag.original], [ColTag.modified])),
+        )
+
+        t.tag_column("Age", ColTag.modified)
+
+        self.assertEqual(
+            len(self.dataset.columns.values) - 2, 
+            len(t.retrive([ColTag.original], [ColTag.modified])),
+        )
+        self.assertEqual(
+            2, 
+            len(t.retrive([ColTag.modified])),
+        )
+        self.assertEqual(
+            len(self.dataset.columns.values), 
+            len(t.retrive([ColTag.original, ColTag.modified])),
+        )
+
+        t.tag_column("Sex", ColTag.categorized)
+
+        self.assertEqual(
+            3, 
+            len(t.retrive([ColTag.modified, ColTag.categorized])),
+        )
+        self.assertEqual(
+            0, 
+            len(t.retrive([ColTag.modified, ColTag.categorized], [ColTag.original])),
+        )
+
+
+
+
+        
+
