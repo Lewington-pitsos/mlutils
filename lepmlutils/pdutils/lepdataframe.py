@@ -23,3 +23,7 @@ class LepDataFrame():
     def reapply(self, tfm: Transform) -> None:
         tfm.re_operate(self.tagged_df)
         self.applied.append(tfm)
+    
+    def apply_sequence(self, seq: List[Transform]) -> None:
+        for tfm in seq:
+            self.apply(tfm)

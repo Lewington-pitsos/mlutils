@@ -2,6 +2,8 @@ import unittest
 import os
 from .lepdataframe import LepDataFrame
 from .badindicatortfm import BadIndicatorTfm
+from .medianreplacetfm import MedianReplaceTfm
+from .categorizetfm import CategorizeTfm
 import pandas as pd
 
 class TestLepDataFrame(unittest.TestCase):
@@ -35,6 +37,13 @@ class TestLepDataFrame(unittest.TestCase):
         self.assertEqual(15, len(l3.frame().columns))
 
     def test_applies_sequences(self):
-        # seq = 
-        pass
+        seq = [
+            BadIndicatorTfm(),
+            MedianReplaceTfm(),
+            CategorizeTfm(),
+        ]
+        l = LepDataFrame(self.dataset)
+        l.apply_sequence(seq)
+        self.assertEqual(20, len(l.frame().columns))
+        self.assertEqual(0, l.frame().isna().any().sum())
 

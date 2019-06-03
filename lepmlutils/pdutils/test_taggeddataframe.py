@@ -4,7 +4,6 @@ from .taggeddataframe import TaggedDataFrame
 from typing import List
 from .coltag import ColTag
 import pandas as pd
-from .cleaning import *
 
 class TestCollTracker(unittest.TestCase):
     def setUp(self):
