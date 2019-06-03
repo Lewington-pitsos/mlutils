@@ -25,3 +25,21 @@ class TestCollTracker(unittest.TestCase):
         modified: List[str] = t.get_all(ColTag.modified)
         self.assertEqual(1, len(modified))
         self.assertEqual("Cabin", modified[0])
+
+        t.tag("Cabin", ColTag.modified)
+        modified: List[str] = t.get_all(ColTag.modified)
+        self.assertEqual(1, len(modified))
+
+        t.tag("NewCol", ColTag.modified)
+        modified: List[str] = t.get_all(ColTag.modified)
+        self.assertEqual(2, len(modified))
+
+        originals: List[str] = t.get_all(ColTag.original)
+        self.assertEqual(len(self.dataset.columns.values), len(originals))
+
+        mapping: List[str] = t.get_all(ColTag.mapping)
+        self.assertEqual(0, len(mapping))
+
+        t.tag("NewCol", ColTag.mapping)
+        mapping: List[str] = t.get_all(ColTag.mapping)
+        self.assertEqual(1, len(mapping))
