@@ -34,10 +34,7 @@ class BadIndicatorTfm(Transform):
     
     # re_operate adds indicator columns for bad values to the new dataframe
     # for every column that contained a bad value on the first operation.
-    def re_operate(self, old_df: TaggedDataFrame, new_df: TaggedDataFrame) -> None:
-        new_df.frame.apply(self.process_old_cols, args=(new_df))
-
-    def process_old_cols(self, col: pd.Series, df: TaggedDataFrame) -> None:
+    def re_operate(self, new_df: TaggedDataFrame) -> None:
         for name in self.altered:
-            self.create_indicator(df.frame[name], df)
+            self.create_indicator(new_df.frame[name], new_df)
 

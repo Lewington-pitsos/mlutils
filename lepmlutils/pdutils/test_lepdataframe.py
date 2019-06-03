@@ -6,10 +6,31 @@ import pandas as pd
 
 class TestLepDataFrame(unittest.TestCase):
     def setUp(self):
-        dirname = os.path.dirname(__file__)
-        self.dataset = pd.read_csv(dirname + "/resources/train.csv")
+        self.dirname = os.path.dirname(__file__)
+        self.dataset = pd.read_csv(self.dirname + "/resources/train.csv")
 
     def test_applies_transform(self):
         l = LepDataFrame(self.dataset)
         tfm = BadIndicatorTfm()
         l.apply(tfm)
+
+        self.assertEqual(15, len(l.frame().columns))
+    
+    def test_copies_transform(self):
+        l = LepDataFrame(self.dataset)
+        tfm = BadIndicatorTfm()
+        l.apply(tfm)
+        self.assertEqual(15, len(l.frame().columns))
+
+        l2 = LepDataFrame(pd.read_csv(self.dirname + "/resources/train.csv"))
+        l2.copy_from(l)
+        self.assertEqual(15, len(l2.frame().columns))
+
+        less_bad_df = pd.read_csv(self.dirname + "/resources/train.csv")
+        less_bad_df["Embarked"].fillna("Q", inplace=True)
+        self.assertEqual(2, less_bad_df.isna().any().sum())
+
+        l3 = LepDataFrame(less_bad_df)
+        l3.copy_from(l2)
+        self.assertEqual(15, len(l3.frame().columns))
+
