@@ -34,3 +34,7 @@ class TestLepDataFrame(unittest.TestCase):
         l3.copy_from(l2)
         self.assertEqual(15, len(l3.frame().columns))
 
+    def test_applies_sequences(self):
+        # seq = 
+        pass
+
