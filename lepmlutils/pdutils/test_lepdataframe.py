@@ -16,17 +16,17 @@ class TestLepDataFrame(unittest.TestCase):
         tfm = BadIndicatorTfm()
         l.apply(tfm)
 
-        self.assertEqual(15, len(l.frame().columns))
+        self.assertEqual(15, len(l.frame.columns))
     
     def test_copies_transform(self):
         l = LepDataFrame(self.dataset)
         tfm = BadIndicatorTfm()
         l.apply(tfm)
-        self.assertEqual(15, len(l.frame().columns))
+        self.assertEqual(15, len(l.frame.columns))
 
         l2 = LepDataFrame(pd.read_csv(self.dirname + "/resources/train.csv"))
         l2.copy_from(l)
-        self.assertEqual(15, len(l2.frame().columns))
+        self.assertEqual(15, len(l2.frame.columns))
 
         less_bad_df = pd.read_csv(self.dirname + "/resources/train.csv")
         less_bad_df["Embarked"].fillna("Q", inplace=True)
@@ -34,7 +34,7 @@ class TestLepDataFrame(unittest.TestCase):
 
         l3 = LepDataFrame(less_bad_df)
         l3.copy_from(l2)
-        self.assertEqual(15, len(l3.frame().columns))
+        self.assertEqual(15, len(l3.frame.columns))
 
     def test_applies_sequences(self):
         seq = [
@@ -44,6 +44,6 @@ class TestLepDataFrame(unittest.TestCase):
         ]
         l = LepDataFrame(self.dataset)
         l.apply_sequence(seq)
-        self.assertEqual(20, len(l.frame().columns))
-        self.assertEqual(0, l.frame().isna().any().sum())
+        self.assertEqual(20, len(l.frame.columns))
+        self.assertEqual(0, l.frame.isna().any().sum())
 
