@@ -12,7 +12,7 @@ class ColTracker():
         for name in df.columns.values:
             self.tags[name] = [ColTag.original]
 
-    def get_all(self, tag: ColTag) -> List[str]:
+    def tagged_as(self, tag: ColTag) -> List[str]:
         col_names: List[str] = []
 
         for name, tags in self.tags.items():
@@ -21,5 +21,5 @@ class ColTracker():
 
         return col_names
     
-    def tag(self, name: str, tag: ColTag) -> None:
+    def tag_column(self, name: str, tag: ColTag) -> None:
         self.tags[name].append(tag)

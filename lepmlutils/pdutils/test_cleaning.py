@@ -3,25 +3,6 @@ import os
 import pandas as pd
 from .cleaning import *
 
-class TestAddBadIndicator(unittest.TestCase):
-    def setUp(self):
-        dirname = os.path.dirname(__file__)
-        self.dataset = pd.read_csv(dirname + "/resources/train.csv")
-
-    def test_raises_errors_for_column_overwrite(self):
-        self.dataset["Cabin_is_bad"] = 9
-
-        self.assertRaises(AssertionError, add_bad_indicator_vars, self.dataset)
-
-    def test_raises_adds_bad_value_columns(self):
-        self.assertEqual(12, len(self.dataset.columns))
-        add_bad_indicator_vars(self.dataset)
-
-        self.assertEqual(15, len(self.dataset.columns))
-        self.assertEqual(687, self.dataset["Cabin_is_bad"].sum())
-        self.assertEqual(2, self.dataset["Embarked_is_bad"].sum())
-        self.assertEqual(177, self.dataset["Age_is_bad"].sum())
-
 class TestColumnReplace(unittest.TestCase):
     def setUp(self):
         dirname = os.path.dirname(__file__)
@@ -50,18 +31,18 @@ class TestColumnReplace(unittest.TestCase):
         self.dataset.loc[0, "Cabin"] = "unknown"
         self.assertRaises(AssertionError, replace_bad_values_with_median, self.dataset)
 
-class TestBasicBadValEliminate(unittest.TestCase):
-    def setUp(self):
-        dirname = os.path.dirname(__file__)
-        self.houses = pd.read_csv(dirname + "/resources/houses_train.csv")
+# class TestBasicBadValEliminate(unittest.TestCase):
+#     def setUp(self):
+#         dirname = os.path.dirname(__file__)
+#         self.houses = pd.read_csv(dirname + "/resources/houses_train.csv")
     
-    def test_raises_adds_bad_value_columns_for_house_data(self):
-        self.assertEqual(19, self.houses.isna().any().sum())
-        self.assertEqual(81, len(self.houses.columns))
+#     def test_raises_adds_bad_value_columns_for_house_data(self):
+#         self.assertEqual(19, self.houses.isna().any().sum())
+#         self.assertEqual(81, len(self.houses.columns))
 
-        remove_bad_vals_basic(self.houses)
-        self.assertEqual(0, self.houses.isna().any().sum())
-        self.assertEqual(100, len(self.houses.columns))
+#         remove_bad_vals_basic(self.houses)
+#         self.assertEqual(0, self.houses.isna().any().sum())
+#         self.assertEqual(100, len(self.houses.columns))
 
 class TestCategorization(unittest.TestCase):
     def setUp(self):
