@@ -26,6 +26,7 @@ class TestColumnReplace(unittest.TestCase):
     def setUp(self):
         dirname = os.path.dirname(__file__)
         self.dataset = pd.read_csv(dirname + "/resources/train.csv")
+        self.houses = pd.read_csv(dirname + "/resources/houses_train.csv")
     
     def test_raises_adds_bad_value_columns(self):
         self.assertEqual(3, self.dataset.isna().any().sum())
@@ -38,6 +39,12 @@ class TestColumnReplace(unittest.TestCase):
         self.assertEqual(202, (self.dataset["Age"] == 28.0).sum())
         self.assertEqual(687, (self.dataset["Cabin"] == "unknown").sum())
         self.assertEqual(2, (self.dataset["Embarked"] == "unknown").sum())
+
+    def test_raises_adds_bad_value_columns_for_house_data(self):
+        self.assertEqual(19, self.houses.isna().any().sum())
+
+        replace_bad_values_with_median(self.dataset)
+        self.assertEqual(0, self.dataset.isna().any().sum())
 
     def test_raises_adds_bad_value_columns_no_existing_unknowns(self):
         self.dataset.loc[0, "Cabin"] = "unknown"
