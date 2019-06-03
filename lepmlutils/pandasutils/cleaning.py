@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 # for every column in the dataframe with at least 1 bad value
 # another column is created with 1's for all entities with
@@ -15,6 +16,13 @@ def process_col(col: pd.Series, df: pd.DataFrame):
         df[bad_col_name] = 0
         df[bad_col_name].loc[col.isna()] = 1
 
-def replace_bad_values_with_median(col: pd.Series):
+def replace_bad_values_with_median(df: pd.DataFrame):
+        df.apply(replace_bad_col_values_with_median, args=(df,))
+
+def replace_bad_col_values_with_median(col: pd.Series, df:pd.DataFrame):
     if col.isna().any():
-        col.fillna(col.median())
+        try:
+                df[col.name] = col.fillna(col.median())
+        except TypeError: 
+                assert "unknown" not in col.values
+                df[col.name] = col.fillna("unknown")
