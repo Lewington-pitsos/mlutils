@@ -13,6 +13,7 @@ class Tuner(Recorder):
     
     def tune(
         self, 
+        model_type: str,
         search_params: Dict,
         set_params: Dict, 
         dataset: DataFrame ,
@@ -20,7 +21,6 @@ class Tuner(Recorder):
         targets: List[str],
         folds: int,
         search_type = GridSearcher,
-        model_type = "classifier",
     ) -> List[Dict]:
         if (len(search_params) == 0):
             raise ValueError("No search parameters provided")

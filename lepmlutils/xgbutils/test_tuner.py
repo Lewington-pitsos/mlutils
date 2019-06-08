@@ -32,13 +32,13 @@ class TestTuner(unittest.TestCase):
         tuner = Tuner()
         try:
             tuner.tune(
+                "invalid",
                 candidates,
                 set_params,
                 self.dataset,
                 self.features,
                 self.target,
                 3,
-                model_type="invalid"
             )
         except ValueError:
                 pass
@@ -57,6 +57,7 @@ class TestTuner(unittest.TestCase):
 
         tuner = Tuner()
         results = tuner.tune(
+            "classifier",
             candidates,
             set_params,
             self.dataset,
@@ -89,13 +90,13 @@ class TestTuner(unittest.TestCase):
 
         tuner = Tuner()
         results = tuner.tune(
+            "regressor",
             candidates,
             set_params,
             self.dataset,
             self.features,
             self.target,
             3,
-            model_type="regressor"
         )
 
         self.assertEqual(16, len(results))
@@ -111,6 +112,7 @@ class TestTuner(unittest.TestCase):
 
         tuner = Tuner()
         results = tuner.tune(
+            "classifier",
             candidates,
             set_params,
             self.dataset,
@@ -133,6 +135,7 @@ class TestTuner(unittest.TestCase):
 
         tuner = Tuner()
         results = tuner.tune(
+            "classifier",
             candidates,
             set_params,
             self.dataset,
