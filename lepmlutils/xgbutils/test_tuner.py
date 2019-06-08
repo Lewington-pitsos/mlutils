@@ -20,6 +20,32 @@ class TestTuner(unittest.TestCase):
             "Survived",
         ]
 
+    def test_error_for_bad_model_type(self):
+        candidates = {
+            'max_depth': range(4, 40, 10),
+        }
+        set_params = {
+            "n_estimators": 40,
+            "seed": 3
+        }
+
+        tuner = Tuner()
+        try:
+            tuner.tune(
+                candidates,
+                set_params,
+                self.dataset,
+                self.features,
+                self.target,
+                3,
+                model_type="invalid"
+            )
+        except ValueError:
+                pass
+        else:
+            raise AssertionError("expected value error to have been raised")
+            
+
     def test_partitions_correctly(self):
         candidates = {
             'max_depth': range(4, 40, 10),
@@ -69,6 +95,7 @@ class TestTuner(unittest.TestCase):
             self.features,
             self.target,
             3,
+            model_type="regressor"
         )
 
         self.assertEqual(16, len(results))

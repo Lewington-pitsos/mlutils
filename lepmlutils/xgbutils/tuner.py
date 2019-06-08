@@ -20,6 +20,7 @@ class Tuner(Recorder):
         targets: List[str],
         folds: int,
         search_type = GridSearcher,
+        model_type = "classifier",
     ) -> List[Dict]:
         if (len(search_params) == 0):
             raise ValueError("No search parameters provided")
@@ -30,6 +31,7 @@ class Tuner(Recorder):
         self.folds = folds
         self.features = features
         self.targets = targets
+        self.model_type = model_type
         self.records = []
 
         return self.tune_classifier()
@@ -45,7 +47,7 @@ class Tuner(Recorder):
 
     def score_parameters(self, params: Dict):
         folds = Partition(self.dataset, self.folds)
-        cl = xgb.XGBClassifier(**params)
+        cl = self.new_model(params)
         record = {
             "test_score": 0,
             "train_score": 0,
@@ -61,6 +63,14 @@ class Tuner(Recorder):
             record["test_score"] += cl.score(test_features, test_targets)
         
         return record
+
+    def new_model(self, params:Dict):
+        if self.model_type == "classifier":
+            return xgb.XGBClassifier(**params)
+        elif self.model_type == "regressor":
+            return xgb.XGBRegressor(**params)
+        else:
+            raise(ValueError("unexpected model_type: %s" % self.model_type))
 
     
     def tune_and_sort(self) -> List[Dict]:
