@@ -42,6 +42,7 @@ class Tuner(Recorder):
             args: Dict = {**self.set_params, **candidates}
             self.records.append(self.score_parameters(args))
         
+        self.average_scores(self.folds)
         self.sort_records()
         return self.records
 
