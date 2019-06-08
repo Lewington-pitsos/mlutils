@@ -100,6 +100,9 @@ class TestTuner(unittest.TestCase):
         )
 
         self.assertEqual(16, len(results))
+        for result in results:
+            self.assertGreaterEqual(1.0, result["test_score"])
+            self.assertGreaterEqual(1.0, result["train_score"])
 
     def test_rand_search(self):
         candidates = {
