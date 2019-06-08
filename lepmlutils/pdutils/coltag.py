@@ -6,3 +6,4 @@ class ColTag(Enum):
     categorized = "categorized"
     mapping = "mapping"
     bad_indicator = "bad_indicator"
+    engineered = "engineered"
