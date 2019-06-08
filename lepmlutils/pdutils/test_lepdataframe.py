@@ -67,9 +67,11 @@ class TestLepDataFrame(unittest.TestCase):
         self.assertEqual(0, test.frame.isna().any().sum())
 
         cols = l.retrive([], [ColTag.mapping])
+        cols = l.retrive([], [ColTag.categorized])
         self.assertEqual(100, len(cols))
 
         cols = test.retrive([], [ColTag.mapping])
+        cols = test.retrive([], [ColTag.categorized])
         self.assertEqual(99, len(cols))
 
 
