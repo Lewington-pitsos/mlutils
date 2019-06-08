@@ -71,7 +71,6 @@ class Tuner(Recorder):
             return xgb.XGBRegressor(**params)
         else:
             raise(ValueError("unexpected model_type: %s" % self.model_type))
-
     
     def tune_and_sort(self) -> List[Dict]:
         self.tune_classifier()

@@ -10,8 +10,8 @@ class DropTfm(Transform):
         self.to_drop = to_drop
     
     def operate(self, df: TaggedDataFrame) -> None:
-        # df.frame.apply(self.process_bad_value_cols, args=(df,))
-        pass
+        df.frame.drop(self.to_drop, axis=1, inplace=True)
+        df.remove(self.to_drop)
         
     # Alias for operate.
     def re_operate(self, new_df: TaggedDataFrame) -> None:
