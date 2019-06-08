@@ -1,7 +1,7 @@
 from .transform import Transform
 from .taggeddataframe import TaggedDataFrame
 from .coltag import ColTag
-from typing import List
+from typing import Dict
 import pandas as pd
 
 # MedianReplaceTfm replaces all bad values in number
@@ -10,7 +10,7 @@ import pandas as pd
 # "unknown".
 class MedianReplaceTfm(Transform):
     def __init__(self):
-        self.altered: List[str] = []
+        self.fill_vals: Dict = {}
     
     def operate(self, df: TaggedDataFrame) -> None:
         df.frame.apply(self.median_replace, args=(df,))
@@ -18,13 +18,22 @@ class MedianReplaceTfm(Transform):
     def median_replace(self, col: pd.Series, df: TaggedDataFrame) -> None:
         if col.isna().any():
             try:
-                    df.frame[col.name] = col.fillna(col.median())
+                    median = col.median()
+                    df.frame[col.name] = col.fillna(median)
+                    self.fill_vals[col.name] = median
             except TypeError: 
                     assert "unknown" not in col.values
                     df.frame[col.name] = col.fillna("unknown")
+                    self.fill_vals[col.name] = "unknown"
         
             df.tag_column(col.name, ColTag.modified)
     
+    # re_operate fills the blanks in new columns with the
+    # median values from the first operation. 
+    # Any columns that still contain bad values have these
+    # replaced with the median for those columns as usual.
     def re_operate(self, new_df: TaggedDataFrame) -> None:
+        for name, value in self.fill_vals.items():
+            new_df.frame[name] = new_df.frame[name].fillna(value)
         self.operate(new_df)
 
