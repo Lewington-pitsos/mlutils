@@ -4,12 +4,15 @@ from .lepdataframe import LepDataFrame
 from .badindicatortfm import BadIndicatorTfm
 from .medianreplacetfm import MedianReplaceTfm
 from .categorizetfm import CategorizeTfm
+from .coltag import ColTag
 import pandas as pd
 
 class TestLepDataFrame(unittest.TestCase):
     def setUp(self):
         self.dirname = os.path.dirname(__file__)
         self.dataset = pd.read_csv(self.dirname + "/resources/train.csv")
+        self.houses = pd.read_csv(self.dirname + "/resources/houses_train.csv")
+        self.houses_test = pd.read_csv(self.dirname + "/resources/houses_t.csv")
 
     def test_applies_transform(self):
         l = LepDataFrame(self.dataset)
@@ -46,4 +49,28 @@ class TestLepDataFrame(unittest.TestCase):
         l.apply_sequence(seq)
         self.assertEqual(20, len(l.frame.columns))
         self.assertEqual(0, l.frame.isna().any().sum())
+
+    def test_reapplies_sequences(self):
+        seq = [
+            BadIndicatorTfm(),
+            MedianReplaceTfm(),
+            CategorizeTfm(),
+        ]
+        l = LepDataFrame(self.houses)
+        l.apply_sequence(seq)
+        self.assertEqual(143, len(l.frame.columns))
+        self.assertEqual(0, l.frame.isna().any().sum())
+
+        test = LepDataFrame(self.houses_test)
+        test.copy_from(l)
+        self.assertEqual(142, len(test.frame.columns))
+        self.assertEqual(0, test.frame.isna().any().sum())
+
+        cols = l.retrive([], [ColTag.mapping])
+        self.assertEqual(100, len(cols))
+
+        cols = test.retrive([], [ColTag.mapping])
+        self.assertEqual(99, len(cols))
+
+
 

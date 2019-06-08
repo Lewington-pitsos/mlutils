@@ -21,11 +21,15 @@ class TaggedDataFrame():
                 col_names.append(name)
 
         return col_names
-    
+        
     def retrive(self, with_tags: List[ColTag] = [], without: List[ColTag] = []) -> List[str]:
         cols_wanted: Set[str] = set()
-        for tag in with_tags:
-            cols_wanted = cols_wanted.union(set(self.tagged_as(tag))) 
+
+        if len(with_tags) == 0:
+            cols_wanted = set(self.tags.keys())
+        else:
+            for tag in with_tags:
+                cols_wanted = cols_wanted.union(set(self.tagged_as(tag))) 
         
         for tag in without:
             cols_wanted = cols_wanted.difference(set(self.tagged_as(tag)))

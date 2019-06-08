@@ -77,7 +77,18 @@ class TestTaggedDataFrame(unittest.TestCase):
             len(t.retrive([ColTag.modified, ColTag.categorized], [ColTag.original])),
         )
 
-
+    def test_advanced_column_retrival_empty_list(self):
+        t:TaggedDataFrame =TaggedDataFrame(self.dataset)
+        self.assertEqual(
+            len(self.dataset.columns.values), 
+            len(t.retrive([])),
+        )
+    
+        t.tag_column("Cabin", ColTag.modified)
+        self.assertEqual(
+            len(self.dataset.columns.values) - 1, 
+            len(t.retrive([], [ColTag.modified])),
+        )
 
 
         
