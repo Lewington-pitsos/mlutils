@@ -21,6 +21,10 @@ class TaggedDataFrame():
                 col_names.append(name)
 
         return col_names
+    
+    def remove(self, cols: List[str]) -> None:
+        for name in cols:
+            del self.tags[name]
         
     def retrive(self, with_tags: List[ColTag] = [], without: List[ColTag] = []) -> List[str]:
         cols_wanted: Set[str] = set()

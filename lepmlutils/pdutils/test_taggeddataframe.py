@@ -90,6 +90,23 @@ class TestTaggedDataFrame(unittest.TestCase):
             len(t.retrive([], [ColTag.modified])),
         )
 
+    def test_column_removal(self):
+        t:TaggedDataFrame =TaggedDataFrame(self.dataset)
+        self.assertEqual(
+            12, 
+            len(t.retrive()),
+        )
+       
+        t.remove(["Cabin", "Sex"])
+        self.assertEqual(
+            10, 
+            len(t.retrive()),
+        )
+
+        self.assertRaises(KeyError, t.remove, ["Cabin"])
+
+
+
 
         
 
