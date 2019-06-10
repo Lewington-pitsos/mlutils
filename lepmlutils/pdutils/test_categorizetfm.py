@@ -18,7 +18,7 @@ class TestCategorization(unittest.TestCase):
         self.assertEqual(0, len(self.houses.tagged_as(ColTag.categorized)))
 
 
-        tfm: CategorizeTfm = CategorizeTfm()
+        tfm: CategorizeTfm = CategorizeTfm(self.houses.frame.select_dtypes(include="object").columns.values)
         tfm.operate(self.houses)
         self.assertEqual(0, len(self.houses.frame.select_dtypes(include="object").columns))
         self.assertEqual(43, len(self.houses.frame.select_dtypes(include="category").columns))
@@ -28,6 +28,12 @@ class TestCategorization(unittest.TestCase):
         self.assertEqual(43, len(self.houses.tagged_as(ColTag.mapping)))
 
     def test_raises_error_on_col_name_conflicts(self):
-        tfm: CategorizeTfm = CategorizeTfm()
+        tfm: CategorizeTfm = CategorizeTfm(self.houses.frame.select_dtypes(include="object").columns.values)
         self.houses.frame["LandSlope_mapping"] = 0
         self.assertRaises(AssertionError, tfm.operate, self.houses)
+
+        # raises assertion error if a column we want to categorize isn't a "stringy" data type.
+        tfm: CategorizeTfm = CategorizeTfm(["MSSubClass"])
+        self.assertRaises(AssertionError, tfm.operate, self.houses)
+
+        self.assertRaises(AssertionError, CategorizeTfm, [])
