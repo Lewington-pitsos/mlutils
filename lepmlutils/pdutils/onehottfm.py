@@ -5,7 +5,7 @@ from .help import all_cols_except
 from typing import List
 import pandas as pd
 
-# Onehot replaces all categorical columns in the
+# OnehotTfm replaces all categorical columns in the
 # dataframe with one-hot encoded columns.
 class OnehotTfm(Transform):
     def __init__(self, to_convert: List[str]):
