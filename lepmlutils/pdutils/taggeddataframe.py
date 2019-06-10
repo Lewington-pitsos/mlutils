@@ -42,3 +42,7 @@ class TaggedDataFrame():
     
     def tag_column(self, name: str, tag: ColTag) -> None:
         self.tags[name].append(tag)
+    
+    def tag_column_multi(self, name: str, tags: List[ColTag]) -> None:
+        for tag in tags:
+            self.tag_column(name, tag)
