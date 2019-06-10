@@ -43,27 +43,27 @@ class TestLepDataFrame(unittest.TestCase):
         seq = [
             BadIndicatorTfm(),
             MedianReplaceTfm(),
-            CategorizeTfm(),
+            CategorizeTfm(self.dataset.select_dtypes(include="object").columns.values),
         ]
         l = LepDataFrame(self.dataset)
         l.apply_sequence(seq)
-        self.assertEqual(20, len(l.frame.columns))
+        self.assertEqual(15, len(l.frame.columns))
         self.assertEqual(0, l.frame.isna().any().sum())
 
     def test_reapplies_sequences(self):
         seq = [
             BadIndicatorTfm(),
             MedianReplaceTfm(),
-            CategorizeTfm(),
+            CategorizeTfm(self.houses.select_dtypes(include="object").columns.values),
         ]
         l = LepDataFrame(self.houses)
         l.apply_sequence(seq)
-        self.assertEqual(143, len(l.frame.columns))
+        self.assertEqual(100, len(l.frame.columns))
         self.assertEqual(0, l.frame.isna().any().sum())
 
         test = LepDataFrame(self.houses_test)
         test.copy_from(l)
-        self.assertEqual(142, len(test.frame.columns))
+        self.assertEqual(99, len(test.frame.columns))
         self.assertEqual(0, test.frame.isna().any().sum())
 
         cols = l.retrive([], [ColTag.mapping])

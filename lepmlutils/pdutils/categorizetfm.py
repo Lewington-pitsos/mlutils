@@ -13,7 +13,6 @@ class CategorizeTfm(Transform):
     
     def operate(self, df: TaggedDataFrame) -> None:
         for col_name in self.to_alter:
-            assert(df.frame[col_name].dtype == "object")
             mapping_col_name = col_name + "_mapping" 
             assert(mapping_col_name not in df.frame)
             df.frame[col_name] = df.frame[col_name].astype('category')
@@ -22,6 +21,9 @@ class CategorizeTfm(Transform):
             df.tag_column(col_name, ColTag.modified)
             df.tag_column(col_name, ColTag.categorized)
             df.tag_column(mapping_col_name, ColTag.mapping)
+        
+        df.frame.drop(self.to_alter, axis=1, inplace=True)
+        df.remove(self.to_alter)
 
     def re_operate(self, new_df: TaggedDataFrame) -> None:
         self.operate(new_df)
