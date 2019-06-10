@@ -10,6 +10,8 @@ class TestOnehotTransform(unittest.TestCase):
         dirname = os.path.dirname(__file__)
         self.dataset = TaggedDataFrame(pd.read_csv(dirname + "/resources/train.csv"))
         self.test = TaggedDataFrame(pd.read_csv(dirname + "/resources/test.csv"))
+        self.houses_train = TaggedDataFrame(pd.read_csv(dirname + "/resources/houses_train.csv"))
+        self.houses_test = TaggedDataFrame(pd.read_csv(dirname + "/resources/houses_t.csv"))
     
     def test_adds_columns(self):
         self.assertEqual(12, self.dataset.frame.shape[1])
@@ -23,6 +25,14 @@ class TestOnehotTransform(unittest.TestCase):
 
         tfm.re_operate(self.test)
         self.assertEqual(14, self.test.frame.shape[1])
+
+    def test_not_too_many(self):
+        tfm = OnehotTfm(self.houses_train.frame.loc[:, self.houses_train.frame.dtypes == "object"].columns.values)
+        tfm.operate(self.houses_train)
+        self.assertEqual(290, self.houses_train.frame.shape[1])
+
+        tfm.re_operate(self.houses_test)
+        self.assertEqual(289, self.houses_test.frame.shape[1])
 
     def test_works_on_converted_columns(self):
         self.assertEqual(12, self.dataset.frame.shape[1])
