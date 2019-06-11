@@ -8,4 +8,5 @@ from .help import *
 from .lepdataframe import LepDataFrame
 from .medianreplacetfm import MedianReplaceTfm
 from .onehottfm import OnehotTfm
+from .skewtfm import SkewTfm
 from .typetfm import TypeTfm
