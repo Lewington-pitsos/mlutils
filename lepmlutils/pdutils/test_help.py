@@ -24,6 +24,27 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(10, len(cols))
         self.assertFalse("Cabin" in cols)
         self.assertFalse("Sex" in cols)
+    
+    def test_dummify(self):
+        self.assertEqual(12, self.dataset.shape[1])
+
+        dummify(self.dataset, ["Embarked", "Sex"])
+        self.assertEqual(15, self.dataset.shape[1])
+
+        dummify(self.houses, self.houses.loc[:, self.houses.dtypes == "object"].columns.values)
+        self.assertEqual(290, self.houses.shape[1])
+
+    def test_dummify_errors(self):
+        dummify(self.dataset, ["Embarked", "Sex"])
+        self.assertRaises(KeyError, dummify, self.dataset, ["Embarked", "Sex"])
+
+        self.assertRaises(ValueError, dummify, self.dataset, ["Age"])
+
+    def test_dummify_on_converted_cols(self):
+        self.assertEqual(12, self.dataset.shape[1])
+        self.dataset["Age"] = self.dataset["Age"].astype(str)
+        dummify(self.dataset, ["Age", "Sex"])
+        self.assertEqual(101, self.dataset.shape[1])
 
 
     

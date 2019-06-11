@@ -1,6 +1,7 @@
 import unittest
 import os
 import pandas as pd
+from .help import *
 from .mergeddataframe import merged_data
 from .medianreplacetfm import MedianReplaceTfm
 
@@ -37,10 +38,21 @@ class TestHelp(unittest.TestCase):
 
         self.assertTrue("SalePrice" not in df.columns.values)
 
+    def test_dropping_rows(self):
+        df = merged_data(self.houses, self.houses_test, ["SalePrice"])
+        df.drop([523, 1298], inplace=True)
+        self.assertEqual(1458, df.extract_train().shape[0])
+
+    def test_whole_frame_assignment(self):
+        df = merged_data(self.houses, self.houses_test, ["SalePrice"])
+        dummify(df, df.loc[:, df.dtypes == "object"].columns.values)
+        self.assertEqual(289, df.shape[1])
+        self.assertEqual(289, df.extract_train().shape[1])
+
     def test_changes_effect_all_frames(self):
         self.assertEqual(19, self.houses.isna().any().sum())
         self.assertEqual(33, self.houses_test.isna().any().sum())
-        
+
         df = merged_data(self.houses, self.houses_test, ["SalePrice"])
         df.fillna(0, inplace=True)
         self.assertEqual(0, df.isna().any().sum())
