@@ -24,10 +24,6 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(10, len(cols))
         self.assertFalse("Cabin" in cols)
         self.assertFalse("Sex" in cols)
-    
-    def test_combine_frames(self):
-        comb = to_single_frame(self.houses, self.houses_test, ["SalePrice"])
-        self.assertEqual(2900, comb.shape[0])
 
 
     
