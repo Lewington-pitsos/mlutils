@@ -3,8 +3,9 @@ from .badindicatortfm import BadIndicatorTfm
 from .categorizetfm import CategorizeTfm
 from .coltag import ColTag
 from .droptfm import DropTfm
-from .typetfm import TypeTfm
-from .onehottfm import OnehotTfm
+from .funcreplacetfm import FuncReplaceTfm
 from .help import *
 from .lepdataframe import LepDataFrame
 from .medianreplacetfm import MedianReplaceTfm
+from .onehottfm import OnehotTfm
+from .typetfm import TypeTfm
