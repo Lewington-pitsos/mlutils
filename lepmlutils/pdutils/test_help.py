@@ -7,6 +7,7 @@ class TestHelp(unittest.TestCase):
         self.dirname = os.path.dirname(__file__)
         self.dataset = pd.read_csv(self.dirname + "/resources/train.csv")
         self.houses = pd.read_csv(self.dirname + "/resources/houses_train.csv")
+        self.houses_test = pd.read_csv(self.dirname + "/resources/houses_t.csv")
 
     def test_most_related(self):
         cols = most_related_columns(self.houses, "SalePrice", 20)
@@ -23,6 +24,10 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(10, len(cols))
         self.assertFalse("Cabin" in cols)
         self.assertFalse("Sex" in cols)
+    
+    def test_combine_frames(self):
+        comb = to_single_frame(self.houses, self.houses_test, ["SalePrice"])
+        self.assertEqual(2900, comb.shape[0])
 
 
     
