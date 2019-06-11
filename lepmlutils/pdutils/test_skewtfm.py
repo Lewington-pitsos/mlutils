@@ -18,7 +18,7 @@ class TestSkewTfm(unittest.TestCase):
         self.assertAlmostEqual(4.7792532923723545 , stats.skew(self.dataset.frame["Fare"].dropna()))
         tfm.operate(self.dataset)
         self.assertAlmostEqual(0.3882898514698657 , stats.skew(self.dataset.frame["Age"].dropna()))
-        self.assertAlmostEqual(0.9509361779115001 , stats.skew(self.dataset.frame["Fare"].dropna()))
+        self.assertAlmostEqual(0.39426283638993376 , stats.skew(self.dataset.frame["Fare"].dropna()))
 
         self.assertEqual(1, len(self.dataset.tagged_as(ColTag.modified)))
 
