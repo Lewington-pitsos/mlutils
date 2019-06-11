@@ -28,6 +28,7 @@ class FuncReplaceTfm(Transform):
                     self.data_df
                 )
             )
+            df.tag_column(name, ColTag.modified)
     
     # re_operate fills the original columns with the 
     # values given by the callback, passing in the 
