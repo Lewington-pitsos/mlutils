@@ -1,5 +1,8 @@
 import pandas as pd
+import numpy as np
 from typing import List
+from .globals import *
+from .estmode import EstMode
 
 def most_related_columns(df: pd.DataFrame, target: str, number: int) -> List[str]:
     return list(df.corr()[target].abs().sort_values(ascending=False)[:number].index.values)
@@ -18,3 +21,39 @@ def confirm_all_dropped(df: pd.DataFrame, cols: List[str]):
         dropped = set(cols) - set(df.columns.values)
         if len(dropped) < len(cols):
             raise ValueError("the following columns were not one-hot encoded: ", *set(cols) - dropped)
+
+def categorize_all_strings(df: pd.DataFrame):
+        for col in df.loc[:, df.dtypes == "object"].columns.values:
+                df[col] = df[col].astype('category').cat.codes
+
+def fill_ordinal_na(df: pd.DataFrame):
+        for col in df.loc[:, df.dtypes != "object"].columns.values:
+                df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
+
+
+def cls_impute(est, df: pd.DataFrame, cols: List[str]):
+        est_impute(est, df, cols, EstMode.classify)
+
+def reg_impute(est, df: pd.DataFrame, cols: List[str]):
+        est_impute(est, df, cols, EstMode.regress)
+
+def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
+        if mode == EstMode.classify:
+                bad_val = CATEGORICAL_BAD_VALUE
+        else:
+                bad_val = ORDINAL_BAD_VALUE
+
+        for col in cols:
+                features = all_cols_except(df, [col])
+
+                # when training the model we remove tows where the
+                # target column has a bad value (otherwise the 
+                # classifier would sometimes predict bad values).
+                clean_frame =  df.loc[df[col] != bad_val, :]
+                est.fit(
+                        clean_frame[features], 
+                        clean_frame[col]
+                )
+                preds = est.predict(df[features])
+                df.loc[df[col] == bad_val, col] = np.extract((df[col] == bad_val).values, preds)
+
