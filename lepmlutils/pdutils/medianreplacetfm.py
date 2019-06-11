@@ -9,15 +9,13 @@ import pandas as pd
 # bad values in string/object columns with the value 
 # "unknown".
 class MedianReplaceTfm(Transform):
-    def __init__(self):
+    def __init__(self, data_df: pd.DataFrame=None):
         self.fill_vals: Dict = {}
-        self.data_df: pd.DataFrame = None
+        self.data_df: pd.DataFrame = data_df
     
-    def operate(self, df: TaggedDataFrame, data_df: pd.DataFrame=None) -> None:
-        if data_df is None:
+    def operate(self, df: TaggedDataFrame) -> None:
+        if self.data_df is None:
             self.data_df = df.frame.copy(deep=True)
-        else:
-            self.data_df = data_df.frame.copy(deep=True)
 
         self.fill_bad_vals(df)
 

@@ -13,16 +13,16 @@ class TestFuncReplaceTfm(unittest.TestCase):
         self.dataset = TaggedDataFrame(pd.read_csv(self.dirname + "/resources/train.csv"))
 
     def test_applies_static_callback(self):
-        tfm = FuncReplaceTfm(eight)
+        tfm = FuncReplaceTfm(eight, ["Age"])
         self.assertEqual(4, (self.dataset.frame["Age"] == 8.0).sum())
-        tfm.operate(self.dataset, ["Age"])
+        tfm.operate(self.dataset)
         self.assertEqual(181, (self.dataset.frame["Age"] == 8.0).sum())
         self.assertEqual(1, len(self.dataset.tagged_as(ColTag.modified)))
 
     def test_applies_meidan(self):
-        tfm = FuncReplaceTfm(median)
+        tfm = FuncReplaceTfm(median, ["Age"])
         self.assertEqual(25, (self.dataset.frame["Age"] == 28.0).sum())
-        tfm.operate(self.dataset, ["Age"])
+        tfm.operate(self.dataset)
         self.assertEqual(202, (self.dataset.frame["Age"] == 28.0).sum())
 
     # def test_applies_KNN(self):
