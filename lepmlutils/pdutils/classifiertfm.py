@@ -10,16 +10,15 @@ import pickle
 # ClassifierReplaceTfm replaces all bad values in the given columns with
 # the outputs of a classifier.
 class ClassifierReplaceTfm(Transform):
-    def __init__(self, cols: List[str], classifier, data_df=pd.DataFrame):
+    def __init__(self, cols: List[str], classifier):
         self.cols = cols
         self.cls = classifier
-        self.data_df = data_df
         self.zoo = {}
 
     def operate(self, df: TaggedDataFrame) -> None:
         for name in self.cols:
-            features = all_cols_except(self.data_df, [name])
-            self.cls.fit(self.data_df[features], self.data_df[name])
+            features = all_cols_except(df, [name])
+            self.cls.fit(df.frame[features], df.frame[name])
             self.zoo[name] = pickle.dumps(self.cls)
 
 

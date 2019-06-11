@@ -8,16 +8,11 @@ import pandas as pd
 # value in the given columns with the output of that 
 # callback. 
 class FuncReplaceTfm(Transform):
-    def __init__(self, callback, cols: List[str], data_df: pd.DataFrame=None):
+    def __init__(self, callback, cols: List[str]):
         self.callback = callback
         self.cols = cols
-        self.data_df = data_df
 
     def operate(self, df: TaggedDataFrame) -> None:
-        if self.data_df is None:
-            self.data_df = df.frame.copy(deep=True)
-
-
         self.fill_bad_vals(df)
 
     def fill_bad_vals(self, df: TaggedDataFrame):
@@ -25,7 +20,7 @@ class FuncReplaceTfm(Transform):
             df.frame[name] = df.frame[name].fillna(
                 self.callback(
                     name,
-                    self.data_df
+                    df.frame
                 )
             )
             df.tag_column(name, ColTag.modified)
