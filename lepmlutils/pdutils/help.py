@@ -23,11 +23,11 @@ def confirm_all_dropped(df: pd.DataFrame, cols: List[str]):
             raise ValueError("the following columns were not one-hot encoded: ", *set(cols) - dropped)
 
 def categorize_all_strings(df: pd.DataFrame):
-        for col in df.loc[:, df.dtypes == "object"].columns.values:
+        for col in cat_cols(df):
                 df[col] = df[col].astype('category').cat.codes
 
 def fill_ordinal_na(df: pd.DataFrame):
-        for col in df.loc[:, df.dtypes != "object"].columns.values:
+        for col in  all_cols_except(df, cat_cols(df)):
                 assert ORDINAL_BAD_VALUE not in df[col].values, f"column {col} already contains {ORDINAL_BAD_VALUE}" 
                 df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
 
@@ -65,3 +65,5 @@ def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
                 preds = est.predict(df[features])
                 df.loc[df[col] == bad_val, col] = np.extract((df[col] == bad_val).values, preds)
 
+def cat_cols(df: pd.DataFrame) -> List[str]:
+        return df.select_dtypes(["category", "object"]).columns.values

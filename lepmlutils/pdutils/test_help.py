@@ -100,7 +100,18 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(3, self.dataset.isna().any().sum())
         encode_string_na(self.dataset)
         self.assertEqual(0, self.dataset.isna().any().sum())
+    
+    def test_non_numeric(self):
+        self.assertEqual(5, len(cat_cols(self.dataset)))
 
+        self.dataset["Age"] = self.dataset["Age"].astype("category") 
+        self.assertEqual(6, len(cat_cols(self.dataset)))
+
+        self.dataset["Sex"] = self.dataset["Sex"].astype("category") 
+        self.assertEqual(6, len(cat_cols(self.dataset)))
+
+        self.dataset["Sex"] = self.dataset["Sex"].cat.codes
+        self.assertEqual(5, len(cat_cols(self.dataset)))
 
         
 
