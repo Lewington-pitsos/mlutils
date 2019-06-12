@@ -1,4 +1,5 @@
 from .addcoltfm import AddColTfm
+from .votingregressor import VotingRegressor
 from .badindicatortfm import BadIndicatorTfm
 from .categorizetfm import CategorizeTfm
 from .coltag import ColTag

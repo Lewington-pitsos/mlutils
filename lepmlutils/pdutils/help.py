@@ -45,6 +45,9 @@ def cls_impute(est, df: pd.DataFrame, cols: List[str]):
 def reg_impute(est, df: pd.DataFrame, cols: List[str]):
         est_impute(est, df, cols, EstMode.regress)
 
+# est_impute replaces all bad values with the given 
+# classifier's predictions. It is assmed that the bad values
+# have already been replaced with certain integers.
 def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
         if mode == EstMode.classify:
                 bad_val = CATEGORICAL_BAD_VALUE
@@ -67,3 +70,20 @@ def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
 
 def cat_cols(df: pd.DataFrame) -> List[str]:
         return df.select_dtypes(["category", "object"]).columns.values
+
+# used for viewing the results of a Sklearn CV searcher
+# more easily.
+def best_n_params(results, number):
+    params = []
+    scores= []
+    all_ranks = list(results["rank_test_score"])
+    all_params = results["params"]
+    all_scores = results["mean_test_score"]
+    
+    for i in range(number):
+        if i+1 in all_ranks:
+                indices = [index for index, rank in enumerate(all_ranks) if rank == i+1]
+                for index in indices:
+                        params.append(all_params[index])
+                        scores.append(all_scores[index])
+    return params, scores

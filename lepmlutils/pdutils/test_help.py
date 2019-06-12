@@ -112,7 +112,6 @@ class TestHelp(unittest.TestCase):
 
         self.dataset["Sex"] = self.dataset["Sex"].cat.codes
         self.assertEqual(5, len(cat_cols(self.dataset)))
-
         
 
 
