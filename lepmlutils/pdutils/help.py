@@ -75,7 +75,7 @@ def cat_cols(df: pd.DataFrame) -> List[str]:
 # more easily.
 def best_n_params(results, number):
     params = []
-    scores= []
+    scores = []
     all_ranks = list(results["rank_test_score"])
     all_params = results["params"]
     all_scores = results["mean_test_score"]
@@ -86,4 +86,4 @@ def best_n_params(results, number):
                 for index in indices:
                         params.append(all_params[index])
                         scores.append(all_scores[index])
-    return params, scores
+    return (params, scores)
