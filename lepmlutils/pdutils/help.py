@@ -28,8 +28,16 @@ def categorize_all_strings(df: pd.DataFrame):
 
 def fill_ordinal_na(df: pd.DataFrame):
         for col in df.loc[:, df.dtypes != "object"].columns.values:
+                assert ORDINAL_BAD_VALUE not in df[col].values, f"column {col} already contains {ORDINAL_BAD_VALUE}" 
                 df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
 
+# encode_string_na encodes all string columns as numbers and
+# replaces all na values in non-string columns with an anomalous
+# intger value. The dataset can now be fit to a sklearn 
+# estimator.
+def encode_string_na(df: pd.DataFrame):
+        categorize_all_strings(df)
+        fill_ordinal_na(df)
 
 def cls_impute(est, df: pd.DataFrame, cols: List[str]):
         est_impute(est, df, cols, EstMode.classify)

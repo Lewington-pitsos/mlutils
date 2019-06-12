@@ -79,11 +79,28 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(1369, (self.houses["Alley"] == CATEGORICAL_BAD_VALUE).sum())
         self.assertEqual(3, self.houses.isna().any().sum())
 
-    
     def test_ordinal_fill(self):
         self.assertEqual(19, self.houses.isna().any().sum())
         fill_ordinal_na(self.houses)
         self.assertEqual(16, self.houses.isna().any().sum())
+
+    def test_ordinal_fill_errors(self):
+        self.houses[99, "LotFrontage"] = ORDINAL_BAD_VALUE
+        self.assertRaises(AssertionError, fill_ordinal_na, self.houses)
+
+    def test_encode_strings_and_na_values(self):
+        self.assertEqual(19, self.houses.isna().any().sum())
+        encode_string_na(self.houses)
+        self.assertEqual(0, self.houses.isna().any().sum())
+
+        self.assertEqual(33, self.houses_test.isna().any().sum())
+        encode_string_na(self.houses_test)
+        self.assertEqual(0, self.houses_test.isna().any().sum())
+
+        self.assertEqual(3, self.dataset.isna().any().sum())
+        encode_string_na(self.dataset)
+        self.assertEqual(0, self.dataset.isna().any().sum())
+
 
         
 
