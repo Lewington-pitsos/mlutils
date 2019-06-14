@@ -47,7 +47,25 @@ class TestHelp(unittest.TestCase):
         self.dataset["Age"] = self.dataset["Age"].astype(str)
         dummify(self.dataset, ["Age", "Sex"])
         self.assertEqual(101, self.dataset.shape[1])
+
+    def test_setting_true_nas(self):
+        self.assertEqual(690, self.houses["FireplaceQu"].isna().sum())
+        self.assertEqual(259, self.houses["LotFrontage"].isna().sum())
+        self.assertEqual(19, self.houses.isna().any().sum())
+        set_true_na(self.houses, self.houses.columns.values)
+        self.assertEqual(690, (self.houses["FireplaceQu"] == UNKNOWN_STR_VAL).sum())
+        self.assertEqual(259, (self.houses["LotFrontage"] == UNKNOWN_NUM_VAL).sum())
+
+        self.assertEqual(0, self.houses.isna().any().sum())
     
+    def test_setting_true_nas_errors(self):
+        self.houses["FireplaceQu"] = self.houses["FireplaceQu"].astype("category")
+        self.assertRaises(AssertionError, set_true_na, self.houses, self.houses.columns.values)
+
+    def test_setting_true_nas_unknown_already_present(self):
+        self.houses.at[100, "FireplaceQu"] = UNKNOWN_STR_VAL
+        self.assertRaises(AssertionError, set_true_na, self.houses, self.houses.columns.values)
+
     def test_est_impute(self):
         est = neighbors.KNeighborsClassifier()
         categorize_all_strings(self.houses)

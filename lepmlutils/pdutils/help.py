@@ -3,6 +3,7 @@ import numpy as np
 from typing import List
 from .globals import *
 from .estmode import EstMode
+from pandas.api.types import is_string_dtype, is_numeric_dtype
 
 def most_related_columns(df: pd.DataFrame, target: str, number: int) -> List[str]:
     return list(df.corr()[target].abs().sort_values(ascending=False)[:number].index.values)
@@ -21,6 +22,20 @@ def confirm_all_dropped(df: pd.DataFrame, cols: List[str]):
         dropped = set(cols) - set(df.columns.values)
         if len(dropped) < len(cols):
             raise ValueError("the following columns were not one-hot encoded: ", *set(cols) - dropped)
+
+# set_true_na replaces all the na values in the given columns with 
+# 0 if the column is ordinal, or "unknown" if the column is an object.
+# The idea is that NA values for these values means that any value
+# would be nonsensical. Passing in the names of categorical columns
+# will cause errors to be thrown.
+def set_true_na(df: pd.DataFrame, cols: List[str]):
+        for col in cols:
+                assert df[col].dtype.name != "category", f"column {col} was categorical, cannot set true NA values on it"
+                if is_string_dtype(df[col]):
+                        assert UNKNOWN_STR_VAL not in df[col].unique(), f"column {col} already contains value {UNKNOWN_STR_VAL}."
+                        df[col].fillna(UNKNOWN_STR_VAL, inplace=True)
+                else:
+                        df[col].fillna(UNKNOWN_NUM_VAL, inplace=True)
 
 def categorize_all_strings(df: pd.DataFrame):
         for col in cat_cols(df):
@@ -57,9 +72,9 @@ def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
         for col in cols:
                 features = all_cols_except(df, [col])
 
-                # when training the model we remove tows where the
-                # target column has a bad value (otherwise the 
-                # classifier would sometimes predict bad values).
+                # when training the model we remove rows where the
+                # target column has a bad value (since these are 
+                # the row's we're trying to predict for). 
                 clean_frame =  df.loc[df[col] != bad_val, :]
                 est.fit(
                         clean_frame[features], 
