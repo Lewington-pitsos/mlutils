@@ -38,11 +38,11 @@ def set_true_na(df: pd.DataFrame, cols: List[str]):
                         df[col].fillna(UNKNOWN_NUM_VAL, inplace=True)
 
 def categorize_all_strings(df: pd.DataFrame):
-        for col in cat_cols(df):
+        for col in str_cols(df):
                 df[col] = df[col].astype('category').cat.codes
 
 def fill_ordinal_na(df: pd.DataFrame):
-        for col in  all_cols_except(df, cat_cols(df)):
+        for col in  all_cols_except(df, str_cols(df)):
                 assert ORDINAL_BAD_VALUE not in df[col].values, f"column {col} already contains {ORDINAL_BAD_VALUE}" 
                 df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
 
@@ -83,7 +83,7 @@ def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
                 preds = est.predict(df[features])
                 df.loc[df[col] == bad_val, col] = np.extract((df[col] == bad_val).values, preds)
 
-def cat_cols(df: pd.DataFrame) -> List[str]:
+def str_cols(df: pd.DataFrame) -> List[str]:
         return df.select_dtypes(["category", "object"]).columns.values
 
 # used for viewing the results of a Sklearn CV searcher
