@@ -37,27 +37,19 @@ def set_true_na(df: pd.DataFrame, cols: List[str]):
                 else:
                         df[col].fillna(UNKNOWN_NUM_VAL, inplace=True)
 
-def categorize_all_strings(df: pd.DataFrame):
-        for col in str_cols(df):
+def categorize_all_strings(df: pd.DataFrame, cols: List[str]):
+        for col in cols:
                 df[col] = df[col].astype('category').cat.codes
 
-def fill_ordinal_na(df: pd.DataFrame):
-        for col in  all_cols_except(df, str_cols(df)):
-                assert ORDINAL_BAD_VALUE not in df[col].values, f"column {col} already contains {ORDINAL_BAD_VALUE}" 
+def fill_ordinal_na(df: pd.DataFrame, cols: List[str]):
+        for col in cols:
+                assert ORDINAL_BAD_VALUE not in df[col].unique(), f"column {col} already contains {ORDINAL_BAD_VALUE}" 
                 df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
 
 def encode_to_int(df: pd.DataFrame, encoding: Dict[str, Dict[str, int]]):
         df.replace(encoding, inplace=True)
         for col in encoding.keys():
                 df[col] = df[col].astype("int8")
-
-# encode_string_na encodes all string columns as numbers and
-# replaces all na values in non-string columns with an anomalous
-# intger value. The dataset can now be fit to a sklearn 
-# estimator.
-def encode_string_na(df: pd.DataFrame):
-        categorize_all_strings(df)
-        fill_ordinal_na(df)
 
 def cls_impute(est, df: pd.DataFrame, cols: List[str]):
         est_impute(est, df, cols, EstMode.classify)
@@ -90,6 +82,9 @@ def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
 
 def str_cols(df: pd.DataFrame) -> List[str]:
         return df.select_dtypes(["category", "object"]).columns.values
+
+def int_cols(df: pd.DataFrame) -> List[str]:
+        return all_cols_except(df, str_cols(df))
 
 # used for viewing the results of a Sklearn CV searcher
 # more easily.

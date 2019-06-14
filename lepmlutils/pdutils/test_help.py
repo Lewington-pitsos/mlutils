@@ -68,8 +68,8 @@ class TestHelp(unittest.TestCase):
 
     def test_est_impute(self):
         est = neighbors.KNeighborsClassifier()
-        categorize_all_strings(self.houses)
-        fill_ordinal_na(self.houses)
+        categorize_all_strings(self.houses, str_cols(self.houses))
+        fill_ordinal_na(self.houses, int_cols(self.houses))
         self.assertEqual(1369, (self.houses["Alley"] == CATEGORICAL_BAD_VALUE).sum())
         self.assertEqual(690, (self.houses["FireplaceQu"] == CATEGORICAL_BAD_VALUE).sum())
         self.assertEqual(313, (self.houses["FireplaceQu"] == 4).sum())
@@ -91,7 +91,7 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))
         self.assertEqual(1369, self.houses["Alley"].isna().sum())
         
-        categorize_all_strings(self.houses)
+        categorize_all_strings(self.houses, str_cols(self.houses))
         self.assertEqual(0, len(self.houses.select_dtypes(include="object").columns))
         self.assertEqual(0, self.houses["Alley"].isna().sum())
         self.assertEqual(1369, (self.houses["Alley"] == CATEGORICAL_BAD_VALUE).sum())
@@ -99,25 +99,12 @@ class TestHelp(unittest.TestCase):
 
     def test_ordinal_fill(self):
         self.assertEqual(19, self.houses.isna().any().sum())
-        fill_ordinal_na(self.houses)
+        fill_ordinal_na(self.houses, int_cols(self.houses))
         self.assertEqual(16, self.houses.isna().any().sum())
 
     def test_ordinal_fill_errors(self):
-        self.houses[99, "LotFrontage"] = ORDINAL_BAD_VALUE
-        self.assertRaises(AssertionError, fill_ordinal_na, self.houses)
-
-    def test_encode_strings_and_na_values(self):
-        self.assertEqual(19, self.houses.isna().any().sum())
-        encode_string_na(self.houses)
-        self.assertEqual(0, self.houses.isna().any().sum())
-
-        self.assertEqual(33, self.houses_test.isna().any().sum())
-        encode_string_na(self.houses_test)
-        self.assertEqual(0, self.houses_test.isna().any().sum())
-
-        self.assertEqual(3, self.dataset.isna().any().sum())
-        encode_string_na(self.dataset)
-        self.assertEqual(0, self.dataset.isna().any().sum())
+        self.houses.at[99, "LotFrontage"] = ORDINAL_BAD_VALUE
+        self.assertRaises(AssertionError, fill_ordinal_na, self.houses, ["LotFrontage"])
     
     def test_non_numeric(self):
         self.assertEqual(5, len(str_cols(self.dataset)))
