@@ -37,7 +37,7 @@ def set_true_na(df: pd.DataFrame, cols: List[str]):
                 else:
                         df[col].fillna(UNKNOWN_NUM_VAL, inplace=True)
 
-def categorize_all_strings(df: pd.DataFrame, cols: List[str]):
+def convert_to_cat_codes(df: pd.DataFrame, cols: List[str]):
         for col in cols:
                 df[col] = df[col].astype('category').cat.codes
 

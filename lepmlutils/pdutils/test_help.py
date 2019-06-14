@@ -68,7 +68,7 @@ class TestHelp(unittest.TestCase):
 
     def test_est_impute(self):
         est = neighbors.KNeighborsClassifier()
-        categorize_all_strings(self.houses, str_cols(self.houses))
+        convert_to_cat_codes(self.houses, str_cols(self.houses))
         fill_ordinal_na(self.houses, int_cols(self.houses))
         self.assertEqual(1369, (self.houses["Alley"] == CATEGORICAL_BAD_VALUE).sum())
         self.assertEqual(690, (self.houses["FireplaceQu"] == CATEGORICAL_BAD_VALUE).sum())
@@ -91,7 +91,7 @@ class TestHelp(unittest.TestCase):
         self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))
         self.assertEqual(1369, self.houses["Alley"].isna().sum())
         
-        categorize_all_strings(self.houses, str_cols(self.houses))
+        convert_to_cat_codes(self.houses, str_cols(self.houses))
         self.assertEqual(0, len(self.houses.select_dtypes(include="object").columns))
         self.assertEqual(0, self.houses["Alley"].isna().sum())
         self.assertEqual(1369, (self.houses["Alley"] == CATEGORICAL_BAD_VALUE).sum())
