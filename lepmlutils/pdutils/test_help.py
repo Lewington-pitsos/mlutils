@@ -121,11 +121,35 @@ class TestHelp(unittest.TestCase):
     def test_encode_int(self):
         self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))
         self.assertEqual(146, (self.houses["ExterCond"] == "Gd").sum())
-        encode_to_int(self.houses, {"ExterCond": {
-            "NA": -1, "Po": 0, "Fa": 1, "TA": 2, "Gd": 3, "Ex": 4
-        }})
+        qual_map = {"NA": -1, "Po": 0, "Fa": 1, "TA": 2, "Gd": 3, "Ex": 4}
+        exp_map = {"NA": -1, "No": 0, "Mn": 1, "Av": 2, "Gd": 3}
+        slope_map = {"NA": -1, "Gtl": 0, "Mod": 1, "Sev": 2}
+        func_map ={"NA": -1, "Sal":1, "Sev":2, "Maj2":3, "Maj1":4, "Mod":5, "Min2":6, "Min1":7, "Typ":8}
+
+        str_ord_cats = [
+            'FireplaceQu', 'BsmtQual', 'BsmtCond', 'GarageQual', 'GarageCond', 
+            'ExterQual', 'ExterCond','HeatingQC',  'KitchenQual', 
+            'Functional', 'BsmtExposure', 'LandSlope', 
+        ]
+
+        manual_enc = {
+            "FireplaceQu": qual_map,
+            "BsmtQual": qual_map,
+            "BsmtQual": qual_map,
+            "GarageQual": qual_map,
+            "GarageCond": qual_map,
+            "ExterQual": qual_map,
+            "ExterCond": qual_map,
+            "HeatingQC": qual_map,
+            "KitchenQual": qual_map,
+            "Functional": func_map,
+            "BsmtExposure":exp_map,
+            "LandSlope": slope_map    
+        }
+
+        encode_to_int(self.houses, manual_enc)
         self.assertEqual(146, (self.houses["ExterCond"] == 3).sum())
-        self.assertEqual(42, len(self.houses.select_dtypes(include="object").columns))
+        self.assertEqual(32, len(self.houses.select_dtypes(include="object").columns))
 
         
 

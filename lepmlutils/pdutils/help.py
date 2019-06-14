@@ -49,6 +49,7 @@ def fill_ordinal_na(df: pd.DataFrame, cols: List[str]):
 def encode_to_int(df: pd.DataFrame, encoding: Dict[str, Dict[str, int]]):
         df.replace(encoding, inplace=True)
         for col in encoding.keys():
+                df[col].fillna(-1, inplace=True)
                 df[col] = df[col].astype("int8")
 
 def cls_impute(est, df: pd.DataFrame, cols: List[str]):
