@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from typing import List
+from typing import List, Dict
 from .globals import *
 from .estmode import EstMode
 from pandas.api.types import is_string_dtype, is_numeric_dtype
@@ -45,6 +45,11 @@ def fill_ordinal_na(df: pd.DataFrame):
         for col in  all_cols_except(df, str_cols(df)):
                 assert ORDINAL_BAD_VALUE not in df[col].values, f"column {col} already contains {ORDINAL_BAD_VALUE}" 
                 df[col].fillna(ORDINAL_BAD_VALUE, inplace=True)
+
+def encode_to_int(df: pd.DataFrame, encoding: Dict[str, Dict[str, int]]):
+        df.replace(encoding, inplace=True)
+        for col in encoding.keys():
+                df[col] = df[col].astype("int8")
 
 # encode_string_na encodes all string columns as numbers and
 # replaces all na values in non-string columns with an anomalous

@@ -130,6 +130,18 @@ class TestHelp(unittest.TestCase):
 
         self.dataset["Sex"] = self.dataset["Sex"].cat.codes
         self.assertEqual(5, len(str_cols(self.dataset)))
+    
+    def test_encode_int(self):
+        self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))
+        self.assertEqual(146, (self.houses["ExterCond"] == "Gd").sum())
+        encode_to_int(self.houses, {"ExterCond": {
+            "NA": -1, "Po": 0, "Fa": 1, "TA": 2, "Gd": 3, "Ex": 4
+        }})
+        self.assertEqual(146, (self.houses["ExterCond"] == 3).sum())
+        self.assertEqual(42, len(self.houses.select_dtypes(include="object").columns))
+
+        
+
         
 
 
