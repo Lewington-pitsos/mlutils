@@ -31,7 +31,6 @@ class Imputer(Partition):
     def knn_impute(self):
         self.encode_categoricals_and_flat_impute()
         self.cls_impute()
-        self.finalize()
 
     # all string columns are encoded to integer values and
     # all bad values are replaced with an outlier integer

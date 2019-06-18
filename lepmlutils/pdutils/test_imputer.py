@@ -19,6 +19,9 @@ class TestImputer(unittest.TestCase):
 
         imp.knn_impute()
         self.assertEqual(0, self.titanic.isna().any().sum())
+        self.assertEqual(12, self.titanic.shape[1])
+
+        imp.finalize()
         self.assertEqual(1731, self.titanic.shape[1])
 
 
@@ -52,6 +55,9 @@ class TestImputer(unittest.TestCase):
         self.assertEqual(0, (self.houses["FireplaceQu"] == CATEGORICAL_BAD_VALUE).sum())
         self.assertEqual(573, (self.houses["FireplaceQu"] == 2).sum())
         self.assertEqual(728, (self.houses["FireplaceQu"] == 3).sum())
+        self.assertEqual(81, self.houses.shape[1])
+
+        imp.finalize()
         self.assertEqual(264, self.houses.shape[1])
         for col, skew in skews.items():
             self.assertLess(np.abs(stats.skew(self.houses[col])),  skew)
