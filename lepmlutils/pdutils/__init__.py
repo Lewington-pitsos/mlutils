@@ -5,6 +5,7 @@ from .categorizetfm import CategorizeTfm
 from .coltag import ColTag
 from .droptfm import DropTfm
 from .funcreplacetfm import FuncReplaceTfm
+from .globals import *
 from .help import *
 from .imputer import Imputer
 from .lepdataframe import LepDataFrame
