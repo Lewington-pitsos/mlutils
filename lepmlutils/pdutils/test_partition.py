@@ -1,15 +1,14 @@
 from .help import *
-from .imputer import Imputer
+from .partition import Partition
 import os
 from scipy import stats
 import unittest
 
-class TestImputer(unittest.TestCase):
+class TestPartition(unittest.TestCase):
     def test_takes_empty_lists(self):
         self.assertEqual(3, self.titanic.isna().any().sum())
-        imp = Imputer(
+        imp = Partition(
             self.titanic,
-            [],
             ["Pclass"],
             [],
             [],
@@ -17,51 +16,10 @@ class TestImputer(unittest.TestCase):
             {}
         )
 
-        imp.knn_impute()
-        self.assertEqual(0, self.titanic.isna().any().sum())
-        self.assertEqual(1731, self.titanic.shape[1])
-
-
-
-    def test_imputes(self):
-        self.assertEqual(19, self.houses.isna().any().sum())
-        self.assertEqual(690, self.houses["FireplaceQu"].isna().sum())
-        self.assertEqual(313, (self.houses["FireplaceQu"] == "TA").sum())
-        self.assertEqual(380, (self.houses["FireplaceQu"] == "Gd").sum())
-        
-        imp = Imputer(
-            self.houses,
-            self.true_nas,
-            self.int_ord_cats,
-            self.int_unord_cats,
-            self.str_ord_cats,
-            self.str_unord_cats,
-            self.manual_enc
-        )
-
-
-        skews = {}
-
-        for col in imp.conts:
-            skew = np.abs(stats.skew(self.houses[col]))
-            if skew > 1.5:
-                skews[col] = skew
-
-        imp.knn_impute()
-        self.assertEqual(0, self.houses.isna().any().sum())
-        self.assertEqual(0, (self.houses["FireplaceQu"] == CATEGORICAL_BAD_VALUE).sum())
-        self.assertEqual(573, (self.houses["FireplaceQu"] == 2).sum())
-        self.assertEqual(728, (self.houses["FireplaceQu"] == 3).sum())
-        self.assertEqual(264, self.houses.shape[1])
-        for col, skew in skews.items():
-            self.assertLess(np.abs(stats.skew(self.houses[col])),  skew)
-
-
 
     def test_initializes(self):
-        imp = Imputer(
+        imp = Partition(
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -71,9 +29,8 @@ class TestImputer(unittest.TestCase):
     
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats + ["SomeNewCol"],
@@ -82,9 +39,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -93,9 +49,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats + ["SomeNewCol"],
             self.str_ord_cats,
@@ -104,9 +59,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats + ["SomeNewCol"],
             self.int_unord_cats,
             self.str_ord_cats,
@@ -115,9 +69,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats[1:],
@@ -126,9 +79,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -139,9 +91,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -150,9 +101,8 @@ class TestImputer(unittest.TestCase):
 
         self.manual_enc["BsmtQual"] = val 
 
-        imp = Imputer(
+        imp = Partition(
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -164,9 +114,8 @@ class TestImputer(unittest.TestCase):
 
         self.assertRaises(
             AssertionError, 
-            Imputer,             
+            Partition,             
             self.houses,
-            self.true_nas,
             self.int_ord_cats,
             self.int_unord_cats,
             self.str_ord_cats,
@@ -178,9 +127,6 @@ class TestImputer(unittest.TestCase):
         self.titanic = pd.read_csv(self.dirname + "/resources/train.csv")
         self.houses = pd.read_csv(self.dirname + "/resources/houses_train.csv")
         self.houses_test = pd.read_csv(self.dirname + "/resources/houses_t.csv")
-        self.true_nas = [
-            "Alley", "Fence", "MiscFeature"
-        ]
         self.int_unord_cats = [
             'MSSubClass'
         ]

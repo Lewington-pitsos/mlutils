@@ -30,7 +30,7 @@ class MergedDataFrame(pd.DataFrame):
 # to which original frame. The target column is dropped from the merged
 # DataFrame, and stored in a seprate Series on the MergedDataFrame.
 def merged_data(traindf: pd.DataFrame, testdf: pd.DataFrame, targets: List[str]) -> MergedDataFrame:
-        all_data = pd.concat((traindf, testdf), sort=False, copy=False).reset_index(drop=True)
+        all_data = pd.concat((traindf, testdf), sort=False).reset_index(drop=True)
         targets = traindf[targets]
         all_data.drop(targets, axis=1, inplace=True)
 
