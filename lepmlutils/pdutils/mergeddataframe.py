@@ -29,13 +29,21 @@ class MergedDataFrame(pd.DataFrame):
 # is then returned. The MergedDataFrame tracks which row indices belong
 # to which original frame. The target column is dropped from the merged
 # DataFrame, and stored in a seprate Series on the MergedDataFrame.
-def merged_data(traindf: pd.DataFrame, testdf: pd.DataFrame, targets: List[str]) -> MergedDataFrame:
+def merged_data(traindf: pd.DataFrame, testdf: pd.DataFrame, target_cols: List[str]) -> MergedDataFrame:
+        frame = merged_data_no_target(traindf, testdf)
+        targets = traindf[target_cols]
+        frame.drop(target_cols, axis=1, inplace=True)
+
+        frame.train_targets = targets
+        return frame
+
+
+# merged_data_no_target does exactly the same thing as merged_data except
+# it is assumed that neither dataframe has any targets.
+def merged_data_no_target(traindf: pd.DataFrame, testdf: pd.DataFrame) -> MergedDataFrame:
         all_data = pd.concat((traindf, testdf), sort=False).reset_index(drop=True)
-        targets = traindf[targets]
-        all_data.drop(targets, axis=1, inplace=True)
 
         frame = MergedDataFrame(all_data)
         frame.train_i = range(0, traindf.shape[0])
         frame.test_i = range(traindf.shape[0], all_data.shape[0])
-        frame.train_targets = targets
         return frame
