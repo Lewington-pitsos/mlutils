@@ -52,23 +52,23 @@ def encode_to_int(df: pd.DataFrame, encoding: Dict[str, Dict[str, int]]):
                 df[col].fillna(-1, inplace=True)
                 df[col] = df[col].astype("int8")
 
-def cls_impute(est, df: pd.DataFrame, cols: List[str]):
-        est_impute(est, df, cols, EstMode.classify)
+def cls_impute(est, df: pd.DataFrame, cols: List[str], ignore: List[str]=[]):
+        est_impute(est, df, cols, EstMode.classify, ignore=ignore)
 
-def reg_impute(est, df: pd.DataFrame, cols: List[str]):
-        est_impute(est, df, cols, EstMode.regress)
+def reg_impute(est, df: pd.DataFrame, cols: List[str], ignore: List[str]=[]):
+        est_impute(est, df, cols, EstMode.regress, ignore=ignore)
 
 # est_impute replaces all bad values with the given 
 # classifier's predictions. It is assmed that the bad values
 # have already been replaced with certain integers.
-def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode):
+def est_impute(est, df: pd.DataFrame, cols: List[str], mode: EstMode, ignore: List[str]=[]):
         if mode == EstMode.classify:
                 bad_val = CATEGORICAL_BAD_VALUE
         else:
                 bad_val = ORDINAL_BAD_VALUE
 
         for col in cols:
-                features = all_cols_except(df, [col])
+                features = all_cols_except(df, [col] + ignore)
 
                 # when training the model we remove rows where the
                 # target column has a bad value (since these are 

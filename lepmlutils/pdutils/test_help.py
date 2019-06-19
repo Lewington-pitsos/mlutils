@@ -86,6 +86,17 @@ class TestHelp(unittest.TestCase):
         reg_impute(est, self.houses, ["LotFrontage"])
         self.assertEqual(0, (self.houses["LotFrontage"] == ORDINAL_BAD_VALUE).sum())     
 
+    def test_est_impute_col_ignore(self):
+        est = neighbors.KNeighborsClassifier()
+        convert_to_cat_codes(self.houses, str_cols(self.houses))
+        fill_ordinal_na(self.houses, int_cols(self.houses))
+        self.houses["OverallCond"] = float('nan')
+        self.assertRaises(ValueError, cls_impute, est, self.houses, ["Alley", "FireplaceQu"])
+
+        cls_impute(est, self.houses, ["Alley", "FireplaceQu"], ignore=["OverallCond"])
+
+
+
     def test_categorize_strings(self):
         self.assertEqual(19, self.houses.isna().any().sum())
         self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))
