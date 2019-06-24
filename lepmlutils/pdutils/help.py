@@ -23,6 +23,13 @@ def confirm_all_dropped(df: pd.DataFrame, cols: List[str]):
         if len(dropped) < len(cols):
             raise ValueError("the following columns were not one-hot encoded: ", *set(cols) - dropped)
 
+def downsize(df :pd.DataFrame) -> None:
+        for col in df.columns.values:
+                if df[col].dtype == "int64":
+                        df[col] = df[col].astype("int32")
+                elif df[col].dtype == "float64":
+                        df[col] = df[col].astype("float32")
+
 # set_true_na replaces all the na values in the given columns with 
 # 0 if the column is ordinal, or "unknown" if the column is an object.
 # The idea is that NA values for these values means that any value

@@ -58,6 +58,17 @@ class TestHelp(unittest.TestCase):
 
         self.assertEqual(0, self.houses.isna().any().sum())
     
+
+    def test_downsize(self):
+        self.assertEqual(self.dataset.dtypes[0], "int64")
+        self.assertEqual(self.dataset.dtypes[5], "float64")
+
+        downsize(self.dataset)
+
+        self.assertEqual(self.dataset.dtypes[0], "int32")
+        self.assertEqual(self.dataset.dtypes[5], "float32")
+
+
     def test_setting_true_nas_errors(self):
         self.houses["FireplaceQu"] = self.houses["FireplaceQu"].astype("category")
         self.assertRaises(AssertionError, set_true_na, self.houses, self.houses.columns.values)
