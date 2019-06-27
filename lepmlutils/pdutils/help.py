@@ -4,6 +4,8 @@ from typing import List, Dict
 from .globals import *
 from .estmode import EstMode
 from pandas.api.types import is_string_dtype, is_numeric_dtype
+from scipy import stats
+from scipy.special import boxcox1p
 
 def most_related_columns(df: pd.DataFrame, target: str, number: int) -> List[str]:
     return list(df.corr()[target].abs().sort_values(ascending=False)[:number].index.values)
@@ -110,3 +112,11 @@ def best_n_params(results, number):
                         params.append(all_params[index])
                         scores.append(all_scores[index])
     return (params, scores)
+
+def skew(df: pd.DataFrame, cols: List[str]):
+        for col in cols:
+                if np.abs(stats.skew(df[col])) > 0.75:
+                        df[col] = boxcox1p(
+                                df[col], 
+                                stats.boxcox_normmax(df[col] + 1)
+                        )
