@@ -30,7 +30,7 @@ def downsize(df :pd.DataFrame) -> None:
                 if df[col].dtype == "int64":
                         df[col] = df[col].astype("int32")
                 elif df[col].dtype == "float64":
-                        df[col] = df[col].astype("float32")
+                        df[col] = df[col].astype("float16")
 
 # set_true_na replaces all the na values in the given columns with 
 # 0 if the column is ordinal, or "unknown" if the column is an object.
