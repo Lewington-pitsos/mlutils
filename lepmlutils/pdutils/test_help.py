@@ -65,8 +65,8 @@ class TestHelp(unittest.TestCase):
 
         downsize(self.dataset)
 
-        self.assertEqual(self.dataset.dtypes[0], "int32")
-        self.assertEqual(self.dataset.dtypes[5], "float32")
+        self.assertEqual(self.dataset.dtypes[0], "int16")
+        self.assertEqual(self.dataset.dtypes[5], "float16")
 
 
     def test_setting_true_nas_errors(self):
