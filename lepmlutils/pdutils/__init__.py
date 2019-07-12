@@ -1,4 +1,4 @@
-from .persister import *
+from . import persister
 
 from .addcoltfm import AddColTfm
 from .votingregressor import VotingRegressor
