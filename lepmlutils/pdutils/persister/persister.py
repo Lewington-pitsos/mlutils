@@ -11,4 +11,15 @@ class Persister():
         if name in self.sets:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")
 
+        df.to_csv(self.path_for(name), index=False)
+
         self.sets.add(name)
+
+    def path_for(self, name:str) ->str:
+        return self.data_path + "/" + name + ".csv"
+
+    def load(self, name:str) -> pd.DataFrame:
+        if name not in self.sets:
+            raise KeyError(f"name {name} does not match any existing saves")
+
+        return pd.read_csv(self.path_for(name))
