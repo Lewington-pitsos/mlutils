@@ -1,3 +1,5 @@
+from .persister import *
+
 from .addcoltfm import AddColTfm
 from .votingregressor import VotingRegressor
 from .badindicatortfm import BadIndicatorTfm
