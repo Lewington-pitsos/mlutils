@@ -9,7 +9,7 @@ class TestPersister(unittest.TestCase):
     
     def test_no_implicit_overrides(self):
         p = Persister("somedir")
-        set1 = pd.DataFrame()
+        set1 = pd.DataFrame([2, 3,3, 4])
 
         p.save("somename", set1)
 
