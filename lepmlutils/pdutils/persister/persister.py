@@ -15,6 +15,14 @@ class Persister():
 
         self.sets.add(name)
 
+    def overwrite(self, name: str, df: pd.DataFrame):
+        if name not in self.sets:
+            raise KeyError(f"name {name} is not already saved, cannot overwrite.")
+
+        df.to_csv(self.path_for(name), index=False)
+
+        self.sets.add(name)
+
     def path_for(self, name:str) ->str:
         return self.data_path + "/" + name + ".csv"
 
