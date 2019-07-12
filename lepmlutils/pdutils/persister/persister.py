@@ -1,11 +1,17 @@
 import pandas as pd
 from typing import Set
-
+import pickle
 
 class Persister():
     def __init__(self, data_path: str):
         self.data_path: str = data_path
         self.sets: Set[str] = set()
+
+    def persist(self, path: str):
+        f = open(path, "wb" )
+        pickle.dump(self, f)
+        f.close()
+
 
     def save(self, name: str, df: pd.DataFrame):
         if name in self.sets:
@@ -31,3 +37,13 @@ class Persister():
             raise KeyError(f"name {name} does not match any existing saves")
 
         return pd.read_csv(self.path_for(name))
+    
+    @classmethod
+    def loadFrom(cls, path: str):
+        f = open(path, "rb" )
+        p = pickle.load(f)
+        f.close()
+        return p
+
+
+

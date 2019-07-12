@@ -37,12 +37,8 @@ class TestPersister(unittest.TestCase):
         p.save("somename", set1)
 
         save_path = self.data_dir + "/persister.pkl"
-        f = open(save_path, "wb" )
-        pickle.dump(p, f)
-        f.close()
-        f = open(save_path, "rb" )
-        q = pickle.load(f)
-        f.close()
+        p.persist(save_path)
+        q = Persister.loadFrom(save_path)
         df = q.load("somename")
         self.assertTrue(df.equals(set1))
 
