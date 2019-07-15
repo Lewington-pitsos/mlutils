@@ -38,7 +38,7 @@ class TestPersister(unittest.TestCase):
 
         save_path = self.data_dir + "/persister.pkl"
         p.persist(save_path)
-        q = Persister.loadFrom(save_path)
+        q = Persister.load_from(save_path)
         df = q.load("somename")
         self.assertTrue(df.equals(set1))
 

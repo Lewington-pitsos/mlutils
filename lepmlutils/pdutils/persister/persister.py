@@ -39,7 +39,7 @@ class Persister():
         return pd.read_csv(self.path_for(name))
     
     @classmethod
-    def loadFrom(cls, path: str):
+    def load_from(cls, path: str):
         f = open(path, "rb" )
         p = pickle.load(f)
         f.close()
