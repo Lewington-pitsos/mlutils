@@ -76,6 +76,11 @@ class TestHelp(unittest.TestCase):
     def test_setting_true_nas_unknown_already_present(self):
         self.houses.at[100, "FireplaceQu"] = UNKNOWN_STR_VAL
         self.assertRaises(AssertionError, set_true_na, self.houses, self.houses.columns.values)
+ 
+    def test_proportion_split(self):
+        a, b = split_at_proportion(self.dataset, 0.4)
+        self.assertEqual(356, len(a))
+        self.assertEqual(535, len(b))
 
     def test_est_impute(self):
         est = neighbors.KNeighborsClassifier()

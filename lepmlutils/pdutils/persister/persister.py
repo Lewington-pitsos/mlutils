@@ -12,7 +12,6 @@ class Persister():
         pickle.dump(self, f)
         f.close()
 
-
     def save(self, name: str, df: pd.DataFrame):
         if name in self.sets:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")

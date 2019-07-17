@@ -54,7 +54,8 @@ def downsize(df :pd.DataFrame, verbose=True) -> None:
     return df
 
 # set_true_na replaces all the na values in the given columns with 
-# 0 if the column is ordinal, or "unknown" if the column is an object.
+# an anomolous integer value if the column is ordinal, or "unknown" 
+# if the column is an object.
 # The idea is that NA values for these values means that any value
 # would be nonsensical. Passing in the names of categorical columns
 # will cause errors to be thrown.
@@ -141,3 +142,8 @@ def skew(df: pd.DataFrame, cols: List[str]):
                                 df[col], 
                                 stats.boxcox_normmax(df[col] + 1)
                         )
+
+def split_at_proportion(df: pd.DataFrame, prop: float):
+    a = int(len(df) * prop)
+    
+    return df.head(a), df.tail(len(df) - a)
