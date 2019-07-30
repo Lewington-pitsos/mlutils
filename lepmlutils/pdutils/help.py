@@ -147,3 +147,38 @@ def split_at_proportion(df: pd.DataFrame, prop: float):
     a = int(len(df) * prop)
     
     return df.head(a), df.tail(len(df) - a)
+
+
+# returns the given series as cat-codes where the codes
+# are numerically ordered according to mean target encoding
+# value.
+def ordered_cat_codes(df, col, target):
+    le = LabelEncoder()
+    le.classes_ = sort_by_target(df, col, target)
+    return le.transform(df[col])
+
+def sort_by_target(df, col, target):
+    return list(df.groupby(col).mean().sort_values(target).index)
+
+# returns the series but with certain levels merged.
+def reclassified(df, col, mp):
+    allvals = list(df[col].value_counts().index)
+    mapping = mapping_from(allvals, mp)
+    return df[col].map(mapping)
+
+# creates mappings from certain categorical values to
+# broader value groups based on whether the values 
+# contain certain substrings.
+def mapping_from(allVals, mp):
+    res = {}
+    for val in allVals:
+        classified = False
+        for key in mp.keys():
+            if key in val:
+                classified = True
+                res[val] = mp[key]
+                break
+        if not classified:
+            res[val] = "unclassified"
+    
+    return res
