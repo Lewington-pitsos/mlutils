@@ -4,14 +4,18 @@ from typing import List, Dict
 from .globals import *
 from .estmode import EstMode
 from pandas.api.types import is_string_dtype, is_numeric_dtype
+from sklearn.preprocessing import LabelEncoder
 from scipy import stats
-from scipy.special import boxcox1p
+from scipy import special
+
+def subtract(a, b):
+        return list(set(a) - set(b))
 
 def most_related_columns(df: pd.DataFrame, target: str, number: int) -> List[str]:
     return list(df.corr()[target].abs().sort_values(ascending=False)[:number].index.values)
 
 def all_cols_except(df: pd.DataFrame, targets: List[str]) -> List[str]:
-    return list(set(df.columns.values) - set(targets))
+    return subtract(df.columns.values, targets)
 
 def dummify(df, cols: List[str]):
         onehot = pd.get_dummies(df[cols])
@@ -138,7 +142,7 @@ def best_n_params(results, number):
 def skew(df: pd.DataFrame, cols: List[str]):
         for col in cols:
                 if np.abs(stats.skew(df[col])) > 0.75:
-                        df[col] = boxcox1p(
+                        df[col] = special.boxcox1p(
                                 df[col], 
                                 stats.boxcox_normmax(df[col] + 1)
                         )
