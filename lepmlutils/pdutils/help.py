@@ -11,6 +11,9 @@ from scipy import special
 def subtract(a, b):
         return list(set(a) - set(b))
 
+def set_concat(a, b):
+        return list(set(a) | set(b))
+
 def most_related_columns(df: pd.DataFrame, target: str, number: int) -> List[str]:
     return list(df.corr()[target].abs().sort_values(ascending=False)[:number].index.values)
 
@@ -156,9 +159,9 @@ def split_at_proportion(df: pd.DataFrame, prop: float):
 # returns the given series as cat-codes where the codes
 # are numerically ordered according to mean target encoding
 # value.
-def ordered_cat_codes(df, col, target):
+def ordered_cat_codes(df, target_df, col, target):
     le = LabelEncoder()
-    le.classes_ = sort_by_target(df, col, target)
+    le.classes_ = sort_by_target(target_df, col, target)
     return le.transform(df[col])
 
 def sort_by_target(df, col, target):
