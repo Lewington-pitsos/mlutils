@@ -7,8 +7,10 @@ import unittest
 
 class TestPersister(unittest.TestCase):
     def setUp(self):
-        self.data_dir = os.path.dirname(__file__) + "/data"
-        os.mkdir(self.data_dir)
+        self.save_dir = os.path.dirname(__file__) + "/data"
+        self.data_dir = os.path.dirname(__file__) + "/resources/"
+        os.mkdir(self.save_dir)
+        self.bets = pd.read_csv(self.data_dir + "bets.csv")
     
     def test_no_implicit_overrides(self):
         p = Persister(self.data_dir)
@@ -32,11 +34,11 @@ class TestPersister(unittest.TestCase):
 
 
     def test_pickling(self):
-        p = Persister(self.data_dir)
+        p = Persister(self.save_dir)
         set1 = pd.DataFrame({"apples":[2, 3,3, 4]})
         p.save("somename", set1)
 
-        save_path = self.data_dir + "/persister.pkl"
+        save_path = self.save_dir + "/persister.pkl"
         p.persist(save_path)
         q = Persister.load_from(save_path)
         df = q.load("somename")
@@ -45,5 +47,5 @@ class TestPersister(unittest.TestCase):
 
 
     def tearDown(self):
-        shutil.rmtree(self.data_dir)
+        shutil.rmtree(self.save_dir)
     
