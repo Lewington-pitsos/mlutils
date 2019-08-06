@@ -200,3 +200,6 @@ def cat_concat_feat(df, a, b):
 
 def add_concat_feat(df, a, b):
         df[f"{a}--{b}"] = concat_feat(df, a, b).astype("category").cat.codes
+
+def count_of(df, col):
+      return df[col].map(df[col].value_counts(dropna=False))
