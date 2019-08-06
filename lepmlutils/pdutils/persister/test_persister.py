@@ -10,10 +10,9 @@ class TestPersister(unittest.TestCase):
         self.save_dir = os.path.dirname(__file__) + "/data"
         self.data_dir = os.path.dirname(__file__) + "/resources/"
         os.mkdir(self.save_dir)
-        self.bets = pd.read_csv(self.data_dir + "bets.csv")
     
     def test_no_implicit_overrides(self):
-        p = Persister(self.data_dir)
+        p = Persister(self.save_dir)
         set1 = pd.DataFrame({"apples":[2, 3,3, 4]})
         self.assertRaises(KeyError, p.load, "somename")
         self.assertRaises(KeyError, p.overwrite, "somename", set1)
@@ -31,6 +30,20 @@ class TestPersister(unittest.TestCase):
         df = p.load("somename")
         self.assertFalse(df.equals(set1))
         self.assertTrue(df.equals(set2))
+
+    def test_date_persisting(self):
+        p = Persister(self.save_dir)
+        df = pd.read_csv(self.data_dir + "bets.csv")
+        self.assertTrue(df["started_at"].dtype == "object")
+        df["started_at"] = pd.to_datetime(df["started_at"])
+        self.assertTrue(df["started_at"].dtype == "datetime64[ns]")
+
+        # p.save("timed", df, ["started_at"])
+
+        # loaded = p.load("timed")
+        # self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
+
+
 
 
     def test_pickling(self):
