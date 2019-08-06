@@ -193,7 +193,10 @@ def mapping_from(allVals, mp):
     return res
 
 def concat_feat(df, a, b):
-        return df[a].astype(str) + "--" + df[b].astype(str)
+        return df[a].astype(str) + "|" + df[b].astype(str)
 
 def cat_concat_feat(df, a, b):
         return concat_feat(df, a, b).astype("category").cat.codes
+
+def add_concat_feat(df, a, b):
+        df[f"{a}--{b}"] = concat_feat(df, a, b).astype("category").cat.codes
