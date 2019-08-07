@@ -5,8 +5,8 @@ import pickle
 
 class Persister():
     def __init__(self, data_path: str):
-        self.data_path: str = data_path
-        self.frames: Dict[str, Profile] = {}
+        self.__data_path: str = data_path
+        self.__frames: Dict[str, Profile] = {}
 
     def persist(self, path: str):
         f = open(path, "wb" )
@@ -14,41 +14,41 @@ class Persister():
         f.close()
 
     def save(self, name: str, df: pd.DataFrame, time_cols = None):
-        if name in self.frames:
+        if name in self.__frames:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")
         
         if time_cols == None:
             time_cols = []
 
-        self.write(name, df, time_cols)
+        self.__write(name, df, time_cols)
 
     def overwrite(self, name: str, df: pd.DataFrame, time_cols = None):
-        if name not in self.frames:
+        if name not in self.__frames:
             raise KeyError(f"name {name} is not already saved, cannot overwrite.")
 
         if time_cols == None:
-            time_cols = self.frames[name].time_cols
+            time_cols = self.__frames[name].time_cols
 
-        self.write(name, df, time_cols)
+        self.__write(name, df, time_cols)
 
-    def write(self, name: str, df: pd.DataFrame, time_cols: List[str]):
+    def load(self, name:str) -> pd.DataFrame:
+        if name not in self.__frames:
+            raise KeyError(f"name {name} does not match any existing saves")
+
+        profile = self.__frames[name]    
+
+        return pd.read_csv(self.__path_for(name), parse_dates=profile.time_cols)
+
+    def __write(self, name: str, df: pd.DataFrame, time_cols: List[str]):
         for col in time_cols:
             assert col in list(df.columns)
             assert df[col].dtype == "datetime64[ns]"
 
-        df.to_csv(self.path_for(name), index=False)
-        self.frames[name] = Profile(name, time_cols)
+        df.to_csv(self.__path_for(name), index=False)
+        self.__frames[name] = Profile(name, time_cols)
 
-    def path_for(self, name:str) ->str:
-        return self.data_path + "/" + name + ".csv"
-
-    def load(self, name:str) -> pd.DataFrame:
-        if name not in self.frames:
-            raise KeyError(f"name {name} does not match any existing saves")
-
-        profile = self.frames[name]    
-
-        return pd.read_csv(self.path_for(name), parse_dates=profile.time_cols)
+    def __path_for(self, name:str) ->str:
+        return self.__data_path + "/" + name + ".csv"
     
     @classmethod
     def load_from(cls, path: str):
