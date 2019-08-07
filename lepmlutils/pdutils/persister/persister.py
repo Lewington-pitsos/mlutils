@@ -16,12 +16,18 @@ class Persister():
     def save(self, name: str, df: pd.DataFrame, time_cols = None):
         if name in self.frames:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")
+        
+        if time_cols == None:
+            time_cols = []
 
         self.write(name, df, time_cols)
 
     def overwrite(self, name: str, df: pd.DataFrame, time_cols = None):
         if name not in self.frames:
             raise KeyError(f"name {name} is not already saved, cannot overwrite.")
+
+        if time_cols == None:
+            time_cols = self.frames[name].time_cols
 
         self.write(name, df, time_cols)
 

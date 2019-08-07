@@ -36,15 +36,25 @@ class TestPersister(unittest.TestCase):
         df = pd.read_csv(self.data_dir + "bets.csv")
         self.assertTrue(df["started_at"].dtype == "object")
         df["started_at"] = pd.to_datetime(df["started_at"])
+        p.save("somename", df)
+
         self.assertTrue(df["started_at"].dtype == "datetime64[ns]")
 
         p.save("timed", df, ["started_at"])
+        loaded = p.load("timed")
+        self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
+        self.assertRaises(AssertionError, p.save, "timed2", df, ["non_existant"])
+        self.assertRaises(AssertionError, p.save, "timed2", df, ["origin"])
 
+        # overwriting without passing in time cols reverts to old
+        # time cols
+        p.overwrite("timed", df)
         loaded = p.load("timed")
         self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
 
-        self.assertRaises(AssertionError, p.save, "timed2", df, ["non_existant"])
-        self.assertRaises(AssertionError, p.save, "timed2", df, ["origin"])
+        p.overwrite("timed", df, [])
+        loaded = p.load("timed")
+        self.assertTrue(loaded["started_at"].dtype == "object")
 
 
 
