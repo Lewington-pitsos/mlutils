@@ -192,8 +192,17 @@ def mapping_from(allVals, mp):
     
     return res
 
+def multi_concat_feat(df, cols):
+        assert len(cols) > 1
+        
+        new_df = pd.DataFrame().reindex_like(df)
+        new_df["placeholder"] = df[cols[0]].astype(str)
+        for col in cols[1:]:
+            new_df["placeholder"] = new_df["placeholder"] + "|" + df[col].astype(str)
+        return new_df["placeholder"]
+
 def concat_feat(df, a, b):
-        return df[a].astype(str) + "|" + df[b].astype(str)
+        return df[a].astype(str) + "|"
 
 def cat_concat_feat(df, a, b):
         return concat_feat(df, a, b).astype("category").cat.codes
@@ -203,3 +212,37 @@ def add_concat_feat(df, a, b):
 
 def count_of(df, col):
       return df[col].map(df[col].value_counts(dropna=False))
+
+
+
+
+def merge_big_categories(df, cols, upper_bound, value=""):
+        for col in cols:
+            cnt = df[col].value_counts()
+            cnt_series = df[col].map(cnt.to_dict())
+            max_value = cnt_series.max()
+            max_level = cnt.idxmax()
+            
+            replacement = value
+            
+            if not replacement:
+                replacement = max_level
+                
+            if max_value > upper_bound:
+                df.at[cnt_series > upper_bound, col] = replacement
+                
+def merge_small_categories(df, cols, lower_bound, value=""):
+        # 0.001 is a good lower bound
+        for col in cols:
+                cnt = df[col].value_counts()
+                cnt_series = df[col].map(cnt.to_dict())
+                min_value = cnt_series.min()
+                min_level = cnt.idxmin()
+                
+                replacement = value
+                
+                if not replacement:
+                replacement = min_level
+                
+                if min_value < lower_bound:
+                df.at[cnt_series < lower_bound, col] = replacement
