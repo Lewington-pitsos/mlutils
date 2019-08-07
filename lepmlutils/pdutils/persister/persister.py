@@ -1,11 +1,12 @@
 import pandas as pd
-from typing import Set
+from .profile import Profile
+from typing import Dict
 import pickle
 
 class Persister():
     def __init__(self, data_path: str):
         self.data_path: str = data_path
-        self.sets: Set[str] = set()
+        self.frames: Dict[str, Profile] = {}
 
     def persist(self, path: str):
         f = open(path, "wb" )
@@ -13,26 +14,26 @@ class Persister():
         f.close()
 
     def save(self, name: str, df: pd.DataFrame, time_cols = None):
-        if name in self.sets:
+        if name in self.frames:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")
 
         df.to_csv(self.path_for(name), index=False)
 
-        self.sets.add(name)
+        self.frames[name] = Profile(name, time_cols)
 
-    def overwrite(self, name: str, df: pd.DataFrame):
-        if name not in self.sets:
+    def overwrite(self, name: str, df: pd.DataFrame, time_cols = None):
+        if name not in self.frames:
             raise KeyError(f"name {name} is not already saved, cannot overwrite.")
 
         df.to_csv(self.path_for(name), index=False)
 
-        self.sets.add(name)
+        self.frames[name] = Profile(name, time_cols)
 
     def path_for(self, name:str) ->str:
         return self.data_path + "/" + name + ".csv"
 
     def load(self, name:str) -> pd.DataFrame:
-        if name not in self.sets:
+        if name not in self.frames:
             raise KeyError(f"name {name} does not match any existing saves")
 
         return pd.read_csv(self.path_for(name))
