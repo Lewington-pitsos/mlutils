@@ -1,4 +1,5 @@
 from .pairpersister import PairPersister
+from lepmlutils import pdutils
 import os
 import pandas as pd
 import pickle
@@ -7,11 +8,12 @@ import unittest
 
 class TestPairPersister(unittest.TestCase):
     def setUp(self):
-        self.data_dir = os.path.dirname(__file__) + "/data"
-        os.mkdir(self.data_dir)
+        self.save_dir = os.path.dirname(__file__) + "/data"
+        self.data_dir = os.path.dirname(__file__) + "/resources/"
+        os.mkdir(self.save_dir)
     
     def test_no_implicit_overrides(self):
-        p = PairPersister(self.data_dir)
+        p = PairPersister(self.save_dir)
         trn = pd.DataFrame({"apples": [2, 3, 4, 5]})
         tst = pd.DataFrame({"apples": [2, 6, 47]})
         self.assertRaises(KeyError, p.overwrite_pair, "apples", trn, tst)
@@ -32,8 +34,43 @@ class TestPairPersister(unittest.TestCase):
         self.assertFalse(trn2.equals(trn3))
         self.assertFalse(tst2.equals(tst3))
 
+    def test_date_cols(self):
+        df = pd.read_csv(self.data_dir + "bets.csv")
+        self.assertTrue(df["started_at"].dtype == "object")
+        
+        df["started_at"] = pd.to_datetime(df["started_at"])
+        trn, tst = pdutils.split_at_proportion(df, 0.5)
+        p = PairPersister(self.save_dir)
+        p.save_pair("somename", trn, tst)
+
+        p.save_pair("timed", trn, tst, ["started_at"])
+        ltrn, ltst = p.load_pair("timed")
+        self.assertTrue(ltrn["started_at"].dtype == "datetime64[ns]")
+        self.assertTrue(ltst["started_at"].dtype == "datetime64[ns]")
+
+        p.overwrite_pair("timed", trn, tst)
+        ltrn, ltst = p.load_pair("timed")
+        self.assertTrue(ltrn["started_at"].dtype == "datetime64[ns]")
+        self.assertTrue(ltst["started_at"].dtype == "datetime64[ns]")
+
+        ltrn.rename(columns={"started_at": "ts"}, inplace=True)
+        ltst.rename(columns={"started_at": "ts"}, inplace=True)
+        p.overwrite_pair("timed", ltrn, ltst, ["ts"])
+        ltrn, ltst = p.load_pair("timed")
+        self.assertTrue(ltrn["ts"].dtype == "datetime64[ns]")
+        self.assertTrue(ltst["ts"].dtype == "datetime64[ns]")
+
+        p.overwrite_pair("timed", ltrn, ltst, [])
+        ltrn, ltst = p.load_pair("timed")
+        self.assertTrue(ltrn["ts"].dtype == "object")
+        self.assertTrue(ltst["ts"].dtype == "object")
+
+
+
+
+
         
 
     def tearDown(self):
-        shutil.rmtree(self.data_dir)
+        shutil.rmtree(self.save_dir)
     

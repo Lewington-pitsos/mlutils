@@ -1,17 +1,30 @@
 from .persister import Persister
+from typing import List
 import pandas as pd
 
 class PairPersister(Persister):
     def __init__(self, data_path: str):
         super().__init__(data_path)
 
-    def save_pair(self, name:str, trn: pd.DataFrame, tst: pd.DataFrame):
-        self.save(self.train_name(name), trn)
-        self.save(self.test_name(name), tst)
+    def save_pair(
+        self, 
+        name:str, 
+        trn: pd.DataFrame, 
+        tst: pd.DataFrame,
+        time_cols: List[str]=None,
+    ):
+        self.save(self.train_name(name), trn, time_cols)
+        self.save(self.test_name(name), tst, time_cols)
 
-    def overwrite_pair(self, name:str, trn: pd.DataFrame, tst: pd.DataFrame):
-        self.overwrite(self.train_name(name), trn)
-        self.overwrite(self.test_name(name), tst)
+    def overwrite_pair(
+        self, 
+        name:str, 
+        trn: pd.DataFrame, 
+        tst: pd.DataFrame,
+        time_cols: List[str]=None,
+    ):
+        self.overwrite(self.train_name(name), trn, time_cols)
+        self.overwrite(self.test_name(name), tst, time_cols)
 
     def load_pair(self, name:str) -> (pd.DataFrame, pd.DataFrame):
         return (
