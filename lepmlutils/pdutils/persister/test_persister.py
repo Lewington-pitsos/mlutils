@@ -38,11 +38,13 @@ class TestPersister(unittest.TestCase):
         df["started_at"] = pd.to_datetime(df["started_at"])
         self.assertTrue(df["started_at"].dtype == "datetime64[ns]")
 
-        # p.save("timed", df, ["started_at"])
+        p.save("timed", df, ["started_at"])
 
-        # loaded = p.load("timed")
-        # self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
+        loaded = p.load("timed")
+        self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
 
+        self.assertRaises(AssertionError, p.save, "timed2", df, ["non_existant"])
+        self.assertRaises(AssertionError, p.save, "timed2", df, ["origin"])
 
 
 
