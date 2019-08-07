@@ -217,18 +217,18 @@ def count_of(df, col):
 
 
 def merge_big_categories(df, cols, upper_bound, value=""):
-        for col in cols:
-            cnt = df[col].value_counts()
-            cnt_series = df[col].map(cnt.to_dict())
-            max_value = cnt_series.max()
-            max_level = cnt.idxmax()
-            
-            replacement = value
-            
-            if not replacement:
+    for col in cols:
+        cnt = df[col].value_counts()
+        cnt_series = df[col].map(cnt.to_dict())
+        max_value = cnt_series.max()
+        max_level = cnt.idxmax()
+        
+        replacement = value
+        
+        if not replacement:
                 replacement = max_level
-                
-            if max_value > upper_bound:
+        
+        if max_value > upper_bound:
                 df.at[cnt_series > upper_bound, col] = replacement
                 
 def merge_small_categories(df, cols, lower_bound, value=""):
@@ -238,11 +238,11 @@ def merge_small_categories(df, cols, lower_bound, value=""):
                 cnt_series = df[col].map(cnt.to_dict())
                 min_value = cnt_series.min()
                 min_level = cnt.idxmin()
-                
+
                 replacement = value
-                
+
                 if not replacement:
-                replacement = min_level
-                
+                        replacement = min_level
+
                 if min_value < lower_bound:
-                df.at[cnt_series < lower_bound, col] = replacement
+                        df.at[cnt_series < lower_bound, col] = replacement
