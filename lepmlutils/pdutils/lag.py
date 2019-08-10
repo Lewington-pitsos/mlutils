@@ -14,8 +14,7 @@ def create_lag(
     lag: int, 
     group_cols: List[str]=[],
 ) -> None: 
-    joined_name = "-".join(group_cols)
-    lag_feat_name = f"{target}-{joined_name}-{time_col}Lag{lag}"
+    lag_feat_name = f"{target}-lag{lag}{time_col}"
     for col in [hash_col, lagged_time_col, lagged_hash_col, lag_feat_name]:
         assert not contains(df, col)
     assert df[time_col].dtype == "int"
@@ -42,5 +41,19 @@ def create_grouped_lag(
     time_col: str, 
     lag: int, 
     group_cols: List[str]=[],
-) -> None: 
-    pass
+    agg: str = "mean",
+) -> None:
+    group_name = "-".join(group_cols)
+    grouped_feat_name = f"{group_name}-{target}{agg}"
+    assert not contains(df, grouped_feat_name)
+    full_grouping = group_cols + [time_col]
+
+    df[grouped_feat_name] = pd.merge(
+        df, 
+        df.groupby(full_grouping).agg({target: [agg]}),
+        on=full_grouping,
+        how="left"
+    )[(target, agg)]
+
+    create_lag(df, grouped_feat_name, time_col, lag, group_cols)
+    df.drop([grouped_feat_name], axis=1, inplace=True)

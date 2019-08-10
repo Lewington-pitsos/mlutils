@@ -1,5 +1,6 @@
 import unittest
 import os
+import math
 from sklearn import neighbors
 from .lag import *
 from .internal import *
@@ -59,8 +60,42 @@ class TestLag(unittest.TestCase):
         for col in [hash_col, lagged_time_col, lagged_hash_col]:
             self.assertTrue(not contains(df, col))
         
-        self.assertTrue("price-dist-dayLag1" in list(df.columns))
+        lag_name = "price-lag1day"    
+        self.assertTrue(lag_name in list(df.columns))
         self.assertEqual(4, df.shape[1])
+        self.assertEqual(21, df[lag_name][2])
+        self.assertEqual(99, df[lag_name][3])
+        self.assertEqual(99, df[lag_name][4])
+        self.assertEqual(32, df[lag_name][5])
+        self.assertEqual(77, df[lag_name][6])
+
+        self.assertTrue(math.isnan(df[lag_name][7]))
+        self.assertTrue(math.isnan(df[lag_name][0]))
+        self.assertTrue(math.isnan(df[lag_name][1]))
+
+
+    def test_creating_groupedlags(self):
+        warnings.filterwarnings("ignore")
+        df = pd.DataFrame({
+                "day":   [3,  3, 3,  4,  4,  4,  5],
+                "price": [5, 99, 15, 32, 40, 80, 55],
+                "dist":  [1,  2,  1, 2,  1,  1,  1,],
+        }, )
+
+        create_grouped_lag(df, "price", "day", 1, ["dist"])
+        self.assertTrue(not contains(df, "dist-pricemean"))
+        
+        lag_name = "dist-pricemean-lag1day"
+        self.assertTrue(lag_name in list(df.columns))
+        self.assertEqual(4, df.shape[1])
+        self.assertEqual(99, df[lag_name][3])
+        self.assertEqual(10, df[lag_name][4])
+        self.assertEqual(10, df[lag_name][5])
+        self.assertEqual(60, df[lag_name][6])
+
+        self.assertTrue(math.isnan(df[lag_name][0]))
+        self.assertTrue(math.isnan(df[lag_name][1]))
+        self.assertTrue(math.isnan(df[lag_name][2]))
 
 
 
