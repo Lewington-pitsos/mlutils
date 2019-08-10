@@ -82,10 +82,10 @@ class TestLag(unittest.TestCase):
                 "dist":  [1,  2,  1, 2,  1,  1,  1,],
         }, )
 
-        create_grouped_lag(df, "price", "day", 1, ["dist"])
+        create_grouped_lags(df, "price", "day", 1, ["dist"])
         self.assertTrue(not contains(df, "dist-pricemean"))
         
-        lag_name = "dist-pricemean-lag1day"
+        lag_name = "distday-pricemean-lag1day"
         self.assertTrue(lag_name in list(df.columns))
         self.assertEqual(4, df.shape[1])
         self.assertEqual(99, df[lag_name][3])

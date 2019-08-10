@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from typing import List, Dict
+from .internal import *
 from .globals import *
 from .estmode import EstMode
 from pandas.api.types import is_string_dtype, is_numeric_dtype
@@ -213,9 +214,6 @@ def add_concat_feat(df, a, b):
 def count_of(df, col):
       return df[col].map(df[col].value_counts(dropna=False))
 
-
-
-
 def merge_big_categories(df, cols, upper_bound, value=""):
     for col in cols:
         cnt = df[col].value_counts()
@@ -247,8 +245,7 @@ def merge_small_categories(df, cols, lower_bound, value=""):
                 if min_value < lower_bound:
                         df.at[cnt_series < lower_bound, col] = replacement
 
-                        
-def map_from(df,  a: str, b: str):
+def map_from(df: pd.DataFrame,  a: str, b: str):
         vals1 = list(df[a].values)
         vals2 = list(df[b].values)
         mapping = {}
@@ -257,3 +254,31 @@ def map_from(df,  a: str, b: str):
                 mapping[vals1[index]] = vals2[index]
         
         return mapping
+
+def add_grouped_feats(
+        df: pd.DataFrame, 
+        group_cols: List[str],
+        target: str, 
+        aggs: List[str] = ["mean"],
+) -> List[str]:
+        grouped = pd.merge(
+                df, 
+                df.groupby(group_cols).agg({target: aggs}),
+                on=group_cols,
+                how="left"
+        )
+
+        group_name = "".join(group_cols)
+
+        all_names = []
+
+        for agg in aggs:
+                agg_name = f"{group_name}-{target}{agg}"
+                assert not contains(df, agg_name)
+                df[agg_name] = grouped[(target, agg)]
+                all_names.append(agg_name)
+        
+        return all_names
+
+                
+                

@@ -1,5 +1,6 @@
 import unittest
 import os
+import warnings
 from sklearn import neighbors
 from .help import *
 from .globals import *
@@ -144,6 +145,28 @@ class TestHelp(unittest.TestCase):
 
         self.dataset["Sex"] = self.dataset["Sex"].cat.codes
         self.assertEqual(5, len(str_cols(self.dataset)))
+
+    def test_add_grouped_feats(self):
+        warnings.filterwarnings("ignore")
+        self.assertEqual(12, self.dataset.shape[1])
+        names = add_grouped_feats(self.dataset, ["Age"], "Survived")
+        self.assertEqual(1, len(names))
+        self.assertEqual("Age-Survivedmean", names[0])
+        self.assertEqual(13, self.dataset.shape[1])
+        self.assertTrue(names[0] in list(self.dataset.columns))
+
+        names = add_grouped_feats(self.dataset, ["Age", "Sex"], "Survived")
+        self.assertEqual(1, len(names))
+        self.assertEqual("AgeSex-Survivedmean", names[0])
+        self.assertEqual(14, self.dataset.shape[1])
+        self.assertTrue(names[0] in list(self.dataset.columns))
+
+        names = add_grouped_feats(self.dataset, ["Age", "Sex"], "Survived", ["max", "min"])
+        self.assertEqual(2, len(names))
+        self.assertEqual("AgeSex-Survivedmax", names[0])
+        self.assertEqual("AgeSex-Survivedmin", names[1])
+        self.assertTrue(names[1] in list(self.dataset.columns))
+        self.assertTrue(names[0] in list(self.dataset.columns))
     
     def test_encode_int(self):
         self.assertEqual(43, len(self.houses.select_dtypes(include="object").columns))

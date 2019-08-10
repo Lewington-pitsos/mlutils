@@ -35,25 +35,16 @@ def already_grouped(df, group_col: str, target: str) -> bool:
     groups = df.groupby(group_col).agg({target: ["min", "max"]})
     return groups[(target, "min")].equals(groups[(target, "max")])
 
-def create_grouped_lag(
+def create_grouped_lags(
     df, 
     target: str, 
     time_col: str, 
     lag: int, 
     group_cols: List[str]=[],
-    agg: str = "mean",
+    aggs: str = ["mean"],
 ) -> None:
-    group_name = "-".join(group_cols)
-    grouped_feat_name = f"{group_name}-{target}{agg}"
-    assert not contains(df, grouped_feat_name)
-    full_grouping = group_cols + [time_col]
+    names = add_grouped_feats(df, group_cols + [time_col], target, aggs)
 
-    df[grouped_feat_name] = pd.merge(
-        df, 
-        df.groupby(full_grouping).agg({target: [agg]}),
-        on=full_grouping,
-        how="left"
-    )[(target, agg)]
-
-    create_lag(df, grouped_feat_name, time_col, lag, group_cols)
-    df.drop([grouped_feat_name], axis=1, inplace=True)
+    for name in names:
+        create_lag(df, name, time_col, lag, group_cols)
+        df.drop([name], axis=1, inplace=True)
