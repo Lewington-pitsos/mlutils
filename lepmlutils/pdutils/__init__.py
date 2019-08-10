@@ -10,6 +10,7 @@ from .globals import *
 from .graphics import *
 from .help import *
 from .imputer import Imputer
+from .lag import *
 from .lepdataframe import LepDataFrame
 from .medianreplacetfm import MedianReplaceTfm
 from .mergeddataframe import MergedDataFrame, merged_data, merged_data_no_target

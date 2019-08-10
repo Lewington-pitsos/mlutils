@@ -56,8 +56,6 @@ class TestPersister(unittest.TestCase):
         loaded = p.load("timed")
         self.assertTrue(loaded["started_at"].dtype == "object")
 
-
-
     def test_pickling(self):
         p = Persister(self.save_dir)
         set1 = pd.DataFrame({"apples":[2, 3,3, 4]})
