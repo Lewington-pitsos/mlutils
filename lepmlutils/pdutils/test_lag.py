@@ -48,19 +48,19 @@ class TestLag(unittest.TestCase):
         )[('SalePrice', 'mean')]
         self.assertTrue(already_grouped(self.dataset, "hash", "MSP"))
 
-    def test_creatinglags(self):
+    def test_creatinglag(self):
         df = pd.DataFrame({
                 "day":   [3,  3,  4,  4,  4,  5,   5, 7],
                 "price": [99, 21, 77, 32, 32, 109, 7, 8],
                 "dist":  [1,  2,  2,  1,  1,  1,   2, 1],
         }, )
 
-        create_lag(df, "price", "day", 1, ["dist"])
+        lag_name = create_lag(df, "price", "day", 1, ["dist"])
 
         for col in [hash_col, lagged_time_col, lagged_hash_col]:
             self.assertTrue(not contains(df, col))
         
-        lag_name = "price-lag1day"    
+        self.assertEqual(lag_name, "price-lag1day")    
         self.assertTrue(lag_name in list(df.columns))
         self.assertEqual(4, df.shape[1])
         self.assertEqual(21, df[lag_name][2])
@@ -82,10 +82,12 @@ class TestLag(unittest.TestCase):
                 "dist":  [1,  2,  1, 2,  1,  1,  1,],
         }, )
 
-        create_grouped_lags(df, "price", "day", 1, ["dist"])
+        lag_names = create_grouped_lags(df, "price", "day", 1, ["dist"])
         self.assertTrue(not contains(df, "dist-pricemean"))
+        self.assertEqual(1, len(lag_names)) 
         
-        lag_name = "distday-pricemean-lag1day"
+        lag_name = lag_names[0]
+        self.assertEqual(lag_name, "distday-pricemean-lag1day") 
         self.assertTrue(lag_name in list(df.columns))
         self.assertEqual(4, df.shape[1])
         self.assertEqual(99, df[lag_name][3])
