@@ -246,3 +246,14 @@ def merge_small_categories(df, cols, lower_bound, value=""):
 
                 if min_value < lower_bound:
                         df.at[cnt_series < lower_bound, col] = replacement
+
+                        
+def map_from(df,  a: str, b: str):
+        vals1 = list(df[a].values)
+        vals2 = list(df[b].values)
+        mapping = {}
+
+        for index in range(len(vals1)):
+                mapping[vals1[index]] = vals2[index]
+        
+        return mapping
