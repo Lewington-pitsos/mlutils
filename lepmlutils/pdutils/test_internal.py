@@ -14,8 +14,10 @@ class TestHelp(unittest.TestCase):
 
     def test_assertions(self):
         df = pd.DataFrame({"a": [3, 4], "b": [5, 6]})
-        assert_no_col(df, "c")
-        self.assertRaises(AssertionError, assert_no_col, df, "a")
+        self.assertFalse(contains(df, "c"))
+        df['c'] = 8
+        self.assertTrue(contains(df, "c"))
+
 
 
 

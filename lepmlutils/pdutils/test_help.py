@@ -61,6 +61,7 @@ class TestHelp(unittest.TestCase):
     
 
     def test_downsize(self):
+        warnings.filterwarnings("ignore")
         self.assertEqual(self.dataset.dtypes[0], "int64")
         self.assertEqual(self.dataset.dtypes[5], "float64")
 
