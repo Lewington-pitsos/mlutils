@@ -13,7 +13,7 @@ def create_lag(
     time_col: str, 
     lag: int, 
     group_cols: List[str]=[],
-): 
+) -> None: 
     joined_name = "-".join(group_cols)
     lag_feat_name = f"{target}-{joined_name}-{time_col}Lag{lag}"
     for col in [hash_col, lagged_time_col, lagged_hash_col, lag_feat_name]:
@@ -32,7 +32,15 @@ def create_lag(
 
     df.drop([hash_col, lagged_time_col, lagged_hash_col], axis=1, inplace=True)
 
-
 def already_grouped(df, group_col: str, target: str) -> bool:
     groups = df.groupby(group_col).agg({target: ["min", "max"]})
     return groups[(target, "min")].equals(groups[(target, "max")])
+
+def create_grouped_lag(
+    df, 
+    target: str, 
+    time_col: str, 
+    lag: int, 
+    group_cols: List[str]=[],
+) -> None: 
+    pass
