@@ -52,7 +52,7 @@ class Persister():
     
     @classmethod
     def load_from(cls, path: str):
-        f = open(path, "rb" )
+        f = open(path, "rb")
         p = pickle.load(f)
         f.close()
         return p
