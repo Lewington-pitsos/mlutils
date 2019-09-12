@@ -261,9 +261,24 @@ def add_grouped_feats(
         target: str, 
         aggs: List[str] = ["mean"],
 ) -> List[str]:
+        return add_grouped_feats_from(
+                df, 
+                df, 
+                group_cols,
+                target,
+                aggs,
+        )
+
+def add_grouped_feats_from(
+        df: pd.DataFrame,
+        stat_df: pd.DataFrame, 
+        group_cols: List[str],
+        target: str, 
+        aggs: List[str],
+) -> List[str]:
         grouped = pd.merge(
                 df, 
-                df.groupby(group_cols).agg({target: aggs}),
+                stat_df.groupby(group_cols).agg({target: aggs}),
                 on=group_cols,
                 how="left"
         )
