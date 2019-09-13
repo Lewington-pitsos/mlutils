@@ -22,6 +22,12 @@ class Persister():
 
         self.__write(name, df, time_cols)
 
+    def delete(self, name: str):
+        if name not in self.__frames:
+            raise KeyError(f"name {name} is not already saved, cannot delete")
+        
+        del self.__frames[name]
+
     def overwrite(self, name: str, df: pd.DataFrame, time_cols = None):
         if name not in self.__frames:
             raise KeyError(f"name {name} is not already saved, cannot overwrite.")

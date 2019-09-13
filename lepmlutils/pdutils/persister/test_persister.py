@@ -31,6 +31,19 @@ class TestPersister(unittest.TestCase):
         self.assertFalse(df.equals(set1))
         self.assertTrue(df.equals(set2))
 
+    def test_delete(self):
+        p = Persister(self.save_dir)
+        set1 = pd.DataFrame({"apples":[2, 3,3, 4]})
+
+        self.assertRaises(KeyError, p.delete, "somename")
+
+        p.save("somename", set1)
+        self.assertRaises(KeyError, p.save, "somename", set1)
+        self.assertRaises(KeyError, p.delete, "othername")
+
+        p.delete("somename")
+        p.save("somename", set1)
+
     def test_date_persisting(self):
         p = Persister(self.save_dir)
         df = pd.read_csv(self.data_dir + "bets.csv")
