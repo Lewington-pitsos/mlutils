@@ -295,5 +295,5 @@ def add_grouped_feats_from(
         
         return all_names
 
-                
-                
+def value_counts(df, col):
+        df[col].map(df[col].value_counts(dropna=False).to_dict())  
