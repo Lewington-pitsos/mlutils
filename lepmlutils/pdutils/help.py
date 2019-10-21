@@ -335,11 +335,11 @@ def add_grouped_feats_from(
         return all_names
 
 
-def add_multi_group(
+def add_multi_groups_from(
         df: pd.DataFrame,
         stat_df: pd.DataFrame, 
         group_cols: List[str],
-        targets: Dict[str: List[str]], 
+        targets: Dict[str, List[str]], 
 ) -> List[str]:
         grouped = pd.merge(
                 df, 
@@ -352,7 +352,7 @@ def add_multi_group(
 
         all_names = []
 
-        for key, agg in targets.items():
+        for key, aggs in targets.items():
                 for agg in aggs:
                         agg_name = f"{group_name}-{key}{agg}"
                         assert not contains(df, agg_name), f"duplicate column: {agg_name}" 
@@ -360,3 +360,10 @@ def add_multi_group(
                         all_names.append(agg_name)
                 
         return all_names
+
+def add_multi_groups(
+        df: pd.DataFrame,
+        group_cols: List[str],
+        targets: Dict[str, List[str]], 
+) -> List[str]:
+        return add_multi_groups_from(df, df, group_cols, targets)
