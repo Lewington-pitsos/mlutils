@@ -43,7 +43,7 @@ class TestPairPersister(unittest.TestCase):
         p = PairPersister(self.save_dir)
         p.save_pair("somename", trn, tst)
 
-        p.save_pair("timed", trn, tst, ["started_at"])
+        p.save_pair("timed", trn, tst)
         ltrn, ltst = p.load_pair("timed")
         self.assertTrue(ltrn["started_at"].dtype == "datetime64[ns]")
         self.assertTrue(ltst["started_at"].dtype == "datetime64[ns]")
@@ -55,12 +55,12 @@ class TestPairPersister(unittest.TestCase):
 
         ltrn.rename(columns={"started_at": "ts"}, inplace=True)
         ltst.rename(columns={"started_at": "ts"}, inplace=True)
-        p.overwrite_pair("timed", ltrn, ltst, ["ts"])
+        p.overwrite_pair("timed", ltrn, ltst)
         ltrn, ltst = p.load_pair("timed")
         self.assertTrue(ltrn["ts"].dtype == "datetime64[ns]")
         self.assertTrue(ltst["ts"].dtype == "datetime64[ns]")
 
-        p.overwrite_pair("timed", ltrn, ltst, [])
+        p.overwrite_pair("timed", ltrn, ltst)
         ltrn, ltst = p.load_pair("timed")
         self.assertTrue(ltrn["ts"].dtype == "datetime64[ns]")
         self.assertTrue(ltst["ts"].dtype == "datetime64[ns]")

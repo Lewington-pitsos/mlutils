@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 
 setup(
      name='lepmlutils',  
-     version='2.5.12',
+     version='2.5.13',
      scripts=['mlutils'] ,
      author="Louka Ewington-Pitsos",
      author_email="lewington@student.unimelb.edu.au",

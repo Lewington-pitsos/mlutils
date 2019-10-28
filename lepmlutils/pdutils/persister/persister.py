@@ -13,14 +13,11 @@ class Persister():
         pickle.dump(self, f)
         f.close()
 
-    def save(self, name: str, df: pd.DataFrame, time_cols = None):
+    def save(self, name: str, df: pd.DataFrame):
         if name in self.__frames:
             raise KeyError(f"name {name} is already saved, cannot overwrite implicitly")
-        
-        if time_cols == None:
-            time_cols = []
 
-        self.__write(name, df, time_cols)
+        self.__write(name, df)
 
     def delete(self, name: str):
         if name not in self.__frames:
@@ -28,14 +25,11 @@ class Persister():
         
         del self.__frames[name]
 
-    def overwrite(self, name: str, df: pd.DataFrame, time_cols = None):
+    def overwrite(self, name: str, df: pd.DataFrame):
         if name not in self.__frames:
             raise KeyError(f"name {name} is not already saved, cannot overwrite.")
 
-        if time_cols == None:
-            time_cols = self.__frames[name].time_cols
-
-        self.__write(name, df, time_cols)
+        self.__write(name, df)
 
     def load(self, name:str) -> pd.DataFrame:
         if name not in self.__frames:
@@ -49,16 +43,12 @@ class Persister():
 
         return df
 
-    def __write(self, name: str, df: pd.DataFrame, time_cols: List[str]):
-        for col in time_cols:
-            assert col in list(df.columns)
-            assert df[col].dtype == "datetime64[ns]"
-        
+    def __write(self, name: str, df: pd.DataFrame):     
         f = open(self.__path_for(name), "wb" )
         pickle.dump(df, f)
         f.close()
 
-        self.__frames[name] = Profile(name, time_cols)
+        self.__frames[name] = Profile(name)
 
     def __path_for(self, name:str) ->str:
         return self.__data_path + "/" + name + ".pkl"

@@ -11,20 +11,18 @@ class PairPersister(Persister):
         name:str, 
         trn: pd.DataFrame, 
         tst: pd.DataFrame,
-        time_cols: List[str]=None,
     ):
-        self.save(self.train_name(name), trn, time_cols)
-        self.save(self.test_name(name), tst, time_cols)
+        self.save(self.train_name(name), trn)
+        self.save(self.test_name(name), tst)
 
     def overwrite_pair(
         self, 
         name:str, 
         trn: pd.DataFrame, 
         tst: pd.DataFrame,
-        time_cols: List[str]=None,
     ):
-        self.overwrite(self.train_name(name), trn, time_cols)
-        self.overwrite(self.test_name(name), tst, time_cols)
+        self.overwrite(self.train_name(name), trn)
+        self.overwrite(self.test_name(name), tst)
 
     def load_pair(self, name:str) -> (pd.DataFrame, pd.DataFrame):
         return (

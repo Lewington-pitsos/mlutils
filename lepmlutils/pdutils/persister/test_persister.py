@@ -53,11 +53,9 @@ class TestPersister(unittest.TestCase):
 
         self.assertTrue(df["started_at"].dtype == "datetime64[ns]")
 
-        p.save("timed", df, ["started_at"])
+        p.save("timed", df)
         loaded = p.load("timed")
         self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
-        self.assertRaises(AssertionError, p.save, "timed2", df, ["non_existant"])
-        self.assertRaises(AssertionError, p.save, "timed2", df, ["origin"])
 
         # overwriting without passing in time cols reverts to old
         # time cols
@@ -65,9 +63,8 @@ class TestPersister(unittest.TestCase):
         loaded = p.load("timed")
         self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
 
-        p.overwrite("timed", df, [])
+        p.overwrite("timed", df)
         loaded = p.load("timed")
-        print(loaded["started_at"].dtype)
         self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
 
     def test_pickling(self):
