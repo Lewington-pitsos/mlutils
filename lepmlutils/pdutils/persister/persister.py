@@ -43,18 +43,25 @@ class Persister():
 
         profile = self.__frames[name]    
 
-        return pd.read_csv(self.__path_for(name), parse_dates=profile.time_cols)
+        f = open(self.__path_for(name), "rb")
+        df = pickle.load(f)
+        f.close()
+
+        return df
 
     def __write(self, name: str, df: pd.DataFrame, time_cols: List[str]):
         for col in time_cols:
             assert col in list(df.columns)
             assert df[col].dtype == "datetime64[ns]"
+        
+        f = open(self.__path_for(name), "wb" )
+        pickle.dump(df, f)
+        f.close()
 
-        df.to_csv(self.__path_for(name), index=False)
         self.__frames[name] = Profile(name, time_cols)
 
     def __path_for(self, name:str) ->str:
-        return self.__data_path + "/" + name + ".csv"
+        return self.__data_path + "/" + name + ".pkl"
     
     @classmethod
     def load_from(cls, path: str):

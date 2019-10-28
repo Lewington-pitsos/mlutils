@@ -62,8 +62,8 @@ class TestPairPersister(unittest.TestCase):
 
         p.overwrite_pair("timed", ltrn, ltst, [])
         ltrn, ltst = p.load_pair("timed")
-        self.assertTrue(ltrn["ts"].dtype == "object")
-        self.assertTrue(ltst["ts"].dtype == "object")
+        self.assertTrue(ltrn["ts"].dtype == "datetime64[ns]")
+        self.assertTrue(ltst["ts"].dtype == "datetime64[ns]")
 
 
 

@@ -67,7 +67,8 @@ class TestPersister(unittest.TestCase):
 
         p.overwrite("timed", df, [])
         loaded = p.load("timed")
-        self.assertTrue(loaded["started_at"].dtype == "object")
+        print(loaded["started_at"].dtype)
+        self.assertTrue(loaded["started_at"].dtype == "datetime64[ns]")
 
     def test_pickling(self):
         p = Persister(self.save_dir)
@@ -79,8 +80,6 @@ class TestPersister(unittest.TestCase):
         q = Persister.load_from(save_path)
         df = q.load("somename")
         self.assertTrue(df.equals(set1))
-
-
 
     def tearDown(self):
         shutil.rmtree(self.save_dir)
