@@ -45,7 +45,7 @@ class Persister():
 
     def __write(self, name: str, df: pd.DataFrame):     
         f = open(self.__path_for(name), "wb" )
-        pickle.dump(df, f)
+        pickle.dump(df, f, protocol = 4)
         f.close()
 
         self.__frames[name] = Profile(name)

@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+# plt.rcParams['figure.figsize'] = (16,8)
+
 def plot_against(df, name, col, **kwargs):
     plot_agg(df, name, col, "mean", **kwargs)
 
